@@ -123,6 +123,7 @@ bash scripts/build-all.sh      # everything: fetch -> sandbox -> parsers ->
 or run the individual steps:
 
 ```sh
+bash scripts/build-proot.sh   # build the proot sandbox tool (once)
 bash scripts/fetch.sh        # download + verify all pinned artifacts
 bash scripts/sandbox.sh      # prepare Ubuntu 22.04 build/test rootfs (proot)
 bash scripts/build-parsers.sh  # compile Tree-sitter parsers in 22.04 sandbox
@@ -133,6 +134,22 @@ bash scripts/verify.sh       # run the offline test suite, write TEST-REPORT.md
 ```
 
 Builds use a proot-based Ubuntu 22.04 sandbox (no Docker required).
+
+## Continuous deployment
+
+Every push to `master` triggers `.github/workflows/build-deb.yml`, which on
+a clean Ubuntu 24.04 runner:
+
+1. installs host tooling (jq, gcc, libtalloc-dev, ...),
+2. builds proot (`scripts/build-proot.sh`, with a vendored-talloc fallback),
+3. restores the checksum-pinned download cache (keyed on
+   `manifest/pins-locked.json`),
+4. runs `scripts/build-all.sh` (fetch + verify pins → 22.04 sandbox →
+   Tree-sitter parsers → stage → ELF audit → .deb → 15-check suite),
+5. uploads the .deb / SHA256SUMS / TEST-REPORT.md as run artifacts, and
+6. re-publishes them on the rolling **`continuous`** prerelease (the tag and
+   release are refreshed in place on every push; the release notes carry the
+   commit, SHA-256 and test tally).
 
 ## Known limitations
 

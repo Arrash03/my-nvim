@@ -1,0 +1,97 @@
+name: Build & Deploy .deb
+
+# Every push to master rebuilds the offline Neovim distribution from the
+# pinned manifest, runs the full 15-check acceptance suite inside the
+# Ubuntu 22.04 proot sandbox, and re-publishes the .deb as a rolling
+# "continuous" GitHub Release (plus a build artifact for the run).
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:   # manual runs
+
+permissions:
+  contents: write      # create/update the rolling release
+
+# One deploy at a time; don't cancel a half-finished build.
+concurrency:
+  group: nvim-forge-deploy
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install host dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends \
+            jq curl ca-certificates xz-utils unzip gzip gcc make python3 \
+            libtalloc-dev
+
+      # Downloads are checksum-pinned; reuse them across runs.
+      - name: Cache upstream artifacts
+        uses: actions/cache@v4
+        with:
+          path: cache
+          key: nvf-cache-${{ hashFiles('manifest/pins-locked.json') }}
+          restore-keys: |
+            nvf-cache-
+
+      - name: Build proot (sandbox tool)
+        run: bash scripts/build-proot.sh
+
+      - name: Fetch pins, build package, audit ELF, run acceptance suite
+        run: bash scripts/build-all.sh
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nvim-forge-${{ github.sha }}
+          path: |
+            dist/*.deb
+            dist/SHA256SUMS
+            dist/TEST-REPORT.md
+          if-no-files-found: error
+
+      - name: Deploy rolling GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          deb=(dist/*.deb)
+          [[ ${#deb[@]} -eq 1 ]] || { echo "expected exactly one .deb" >&2; exit 1; }
+
+          ver=$(dpkg-deb -f "${deb[0]}" Version)
+          sha=$(sha256sum "${deb[0]}" | cut -d' ' -f1)
+          size=$(du -h "${deb[0]}" | cut -f1)
+          passed=$(grep -cE '\| PASS \|$' dist/TEST-REPORT.md || true)
+          total=$(grep -cE '^| T[0-9]+' dist/TEST-REPORT.md || true)
+
+          tag=continuous
+          {
+            echo "Rolling release of **nvim-forge ${ver}**, built from commit \`${GITHUB_SHA::12}\`."
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Commit | \`${GITHUB_SHA::12}\` |"
+            echo "| Size | ${size} |"
+            echo "| SHA-256 | \`${sha}\` |"
+            echo "| Acceptance tests | ${passed}/${total} passed |"
+            echo
+            echo "**Install:** download the \`.deb\` below, then"
+            echo "\`sha256sum -c SHA256SUMS\` and \`sudo dpkg -i nvim-forge_${ver}_amd64.deb\`."
+            echo "Works fully offline afterwards; see \`TEST-REPORT.md\` for validation details."
+          } > /tmp/release-notes.md
+
+          gh release view "$tag" >/dev/null 2>&1 \
+            || gh release create "$tag" --prerelease --title "nvim-forge ${ver} (continuous)"
+          gh release edit "$tag" --prerelease \
+            --title "nvim-forge ${ver} (continuous)" \
+            --notes-file /tmp/release-notes.md
+          gh release upload "$tag" "${deb[@]}" dist/SHA256SUMS dist/TEST-REPORT.md --clobber
