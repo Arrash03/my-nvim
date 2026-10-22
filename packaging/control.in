@@ -1,0 +1,22 @@
+Package: nvim-forge
+Version: 1.0.0
+Section: editors
+Priority: optional
+Architecture: amd64
+Depends: libc6 (>= 2.35), libgcc-s1, libstdc++6
+Maintainer: nvim-forge Maintainers <nvim-forge@localhost>
+Description: Self-contained Neovim distribution with LSP for Python, C, C++ and Rust
+ nvim-forge bundles everything needed for a modern Neovim programming
+ environment into a single package: the Neovim editor itself, a curated
+ plugin set, pre-built Tree-sitter parsers, the BasedPyright (Python),
+ clangd (C/C++) and rust-analyzer (Rust) language servers, plus the
+ runtimes they need (a Node.js runtime and a complete Rust toolchain
+ including cargo, rustc, rust-std and rust-src).
+ .
+ After installation the editor works fully offline: no plugin manager
+ bootstrap, no :TSInstall, no npm, no rustup, no Internet access of any
+ kind is required.  The system Neovim is never touched; nvim-forge is
+ launched with its own command and keeps all writable state in per-user
+ XDG directories.
+ .
+ Launch with: nvim-forge

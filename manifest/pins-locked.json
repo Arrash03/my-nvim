@@ -1,0 +1,83 @@
+{
+  "nvim": {
+    "sha256": "474430d53e6264f6d6dd18db42d6dc9df3a1b56ca9e88a325bbf860e1a811d87"
+  },
+  "clangd": {
+    "sha256": "e53b1a96196095faedb7642cf64964f7fb9ad4a0c1f00dd2c172a3d9dcbafdfd"
+  },
+  "ts_grammar_python": {
+    "sha256": "4609a3665a620e117acf795ff01b9e965880f81745f287a16336f4ca86cf270c"
+  },
+  "ts_grammar_c": {
+    "sha256": "dc3979e40fce678c27273ba8ab93b48b5acd6b91d1dfde6a4451222d366d689f"
+  },
+  "ts_grammar_cpp": {
+    "sha256": "6c6efaf024f5c02fee0403e4e2373346eeadc40828587bcfad9351df2f0a7986"
+  },
+  "ts_grammar_rust": {
+    "sha256": "dee82ddfd01bfc3a8ed201cc03b56448107d3217a4b3a7a8fc7fa6bc32b2405b"
+  },
+  "plugin_nvim-treesitter": {
+    "sha256": "58c72433be10c9cf584c755a5a51c5c04c03ab1896760ae91287fc6b7fd868a9"
+  },
+  "plugin_nvim-lspconfig": {
+    "sha256": "3a48156bc16ad1cc195682e3639930f60fa54155eaaa632580d13842dcb82434"
+  },
+  "plugin_nvim-cmp": {
+    "sha256": "ce5d876d5a77998705e1a7ae93e759485997a92e8e1d8b6e93a5ab513577f583"
+  },
+  "plugin_cmp-nvim-lsp": {
+    "sha256": "5c0ae11284b37ab969dac4924c766b0834cf1218878231c2c26e755381255d9f"
+  },
+  "plugin_cmp-buffer": {
+    "sha256": "ca9030d9834b6121a81cb660410fc4f0d319764ca7e6531b755524c7f0f136e0"
+  },
+  "plugin_LuaSnip": {
+    "sha256": "3d0333a27edcf0cb6d0a92d7612499ad470deff933d208ed8897cd7bbdc02474"
+  },
+  "plugin_friendly-snippets": {
+    "sha256": "0f49eed34da5b05051e1f9f5ae445e3547a363964238ad6d3854107c6afef424"
+  },
+  "plugin_lualine.nvim": {
+    "sha256": "0bb7ae9af7c16ce56292f0fb38f57dfbdd48a071a5f08e0bff8bed6b9b02006b"
+  },
+  "plugin_nvim-autopairs": {
+    "sha256": "918352ca112ef4ef61aa2bfd0af7d98d41c8e0c474485d2641192b59b3e89ecd"
+  },
+  "plugin_telescope.nvim": {
+    "sha256": "eafbb8b10f5b0bc4e55c4e654b24e17ef9372e3bcff4a04788a62d15cebfec2d"
+  },
+  "plugin_plenary.nvim": {
+    "sha256": "d9e7562417b49f4c9c0bf6f7edeb1d798665d967dbfaad428b893c28f36478ba"
+  },
+  "node": {
+    "sha256": "cc2f601cee82d9a5a233302fe307abc600727035fd7d2c3a3571755989e95008"
+  },
+  "basedpyright": {
+    "sha256": "5d1073a0e61a1adc6b40b2bed4489017aa5c1336aa8e6fdcb7157b9bf26f3fab"
+  },
+  "rust_channel_toml": {
+    "sha256": "fb152be80975c194aa5fc684b2aec3a6e14e2b855efe2faa4e5f8ae6e590f463"
+  },
+  "license_nvim-LICENSE.txt": {
+    "sha256": "de23202ef9a51f5e654034190539739a4abece5505f2ce75e780791106707011"
+  },
+  "license_ts-python-LICENSE": {
+    "sha256": "d724405ce238a22c0d35769c5a36b386ad5958192efe8bbb304fb2896254575f"
+  },
+  "license_ts-c-LICENSE": {
+    "sha256": "2e0110e07abef7c2548b26ec9d6969775617ca539a0dc8dbeeb14d6452c711d1"
+  },
+  "license_ts-cpp-LICENSE": {
+    "sha256": "2e0110e07abef7c2548b26ec9d6969775617ca539a0dc8dbeeb14d6452c711d1"
+  },
+  "license_ts-rust-LICENSE": {
+    "sha256": "31d5b6f4243d5c7c6e1c4ebbbb9f6407bd1457a08bcc4f706521710341acba36"
+  },
+  "plugin_nvim-tree.lua": {
+    "sha256": "f4ac9392c0380260136165e2c0a14dc14b0cb52485e506dff395be6bf3dc2a7d"
+  },
+  "plugin_nvim-web-devicons": {
+    "sha256": "051e5145d51bc4b8faeb722dce17033f50714fc894b5fe0a7e2b8c9b59f4e802"
+  }
+}

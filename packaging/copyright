@@ -1,0 +1,65 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: nvim-forge
+Comment: nvim-forge is an aggregate package; it redistributes the
+ components listed below.  Complete license texts of every bundled
+ component are installed to /opt/nvim-forge/licenses/ and
+ /usr/share/doc/nvim-forge/.
+
+Files: *
+Copyright: 2026 nvim-forge Maintainers
+License: MIT
+ nvim-forge's own configuration, packaging and scripts are MIT licensed.
+ .
+ Permission is hereby granted, free of charge, to any person obtaining a
+ copy of this software and associated documentation files (the
+ "Software"), to deal in the Software without restriction, including
+ without limitation the rights to use, copy, modify, merge, publish,
+ distribute, sublicense, and/or sell copies of the Software, and to
+ permit persons to whom the Software is furnished to do so, subject to
+ the following conditions:
+ .
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Software.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Files: /opt/nvim-forge/bin/*, /opt/nvim-forge/share/nvim/*, /opt/nvim-forge/lib/nvim/*
+Copyright: 2014-2026 Neovim contributors
+License: Apache-2.0 and Vim
+ Full license texts: /opt/nvim-forge/licenses/nvim-*
+
+Files: /opt/nvim-forge/lib/node/*
+Copyright: 2026 OpenJS Foundation and other contributors
+License: MIT and Node.js
+ Full license text: /opt/nvim-forge/licenses/node-LICENSE
+
+Files: /opt/nvim-forge/lib/rust/*
+Copyright: 2010 The Rust Project Developers
+License: MIT and Apache-2.0
+ Full license texts: /opt/nvim-forge/lib/rust/share/doc/rust/*
+
+Files: /opt/nvim-forge/servers/basedpyright/*
+Copyright: 2024 Dylan Schlottel-O'Brien and Pyright contributors
+License: MIT
+ Full license text: /opt/nvim-forge/licenses/basedpyright-LICENSE.txt
+
+Files: /opt/nvim-forge/servers/clangd/*
+Copyright: 2014-2026 The LLVM Project developers
+License: Apache-2.0 with LLVM-exception
+ Full license text: /opt/nvim-forge/licenses/clangd-LICENSE.TXT
+
+Files: /opt/nvim-forge/parsers/*
+Copyright: tree-sitter grammar authors (see each parser's upstream repository)
+License: MIT
+ Grammar sources and their exact revisions are recorded in
+ /opt/nvim-forge/manifest/pins.json.
+
+Files: /opt/nvim-forge/plugins/*
+Copyright: the respective plugin authors
+License: MIT (see /opt/nvim-forge/licenses/plugin-*-LICENSE)

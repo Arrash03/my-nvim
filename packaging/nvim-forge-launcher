@@ -1,0 +1,42 @@
+#!/bin/sh
+# nvim-forge launcher.
+#
+# Runs the bundled Neovim with the bundled configuration and a controlled
+# environment.  Writable per-user data (shada, swap, undo, cache) goes to
+# standard XDG directories under the "nvim-forge" app name; the bundle in
+# /opt stays read-only.
+#
+# This script never modifies the user's shell configuration and never
+# touches the system Neovim (/usr/bin/nvim).
+
+NVF_HOME=/opt/nvim-forge
+
+if [ ! -x "$NVF_HOME/bin/nvim" ]; then
+    echo "nvim-forge: bundle missing at $NVF_HOME (reinstall the package)" >&2
+    exit 127
+fi
+export NVF_HOME
+
+# Keep user state in per-app XDG directories (~/.local/share/nvim-forge, ...).
+export NVIM_APPNAME=nvim-forge
+
+# Controlled PATH: the bundled toolchain first so rust-analyzer finds its
+# cargo/rustc and scripts find node; the system PATH is appended unchanged.
+PATH="$NVF_HOME/lib/rust/bin:$NVF_HOME/lib/node/bin:$PATH"
+export PATH
+
+# rust-src location for tools that look at RUST_SRC_PATH.
+RUST_SRC_PATH="$NVF_HOME/lib/rust/lib/rustlib/src/rust/library"
+export RUST_SRC_PATH
+
+# Private shared libraries shipped with clangd (none are needed on stock
+# Ubuntu 22.04 today; the hook keeps future LLVM bumps working offline).
+if [ -d "$NVF_HOME/servers/clangd/lib" ]; then
+    LD_LIBRARY_PATH="$NVF_HOME/servers/clangd/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+    export LD_LIBRARY_PATH
+fi
+
+exec "$NVF_HOME/bin/nvim" \
+    --cmd "set runtimepath^=$NVF_HOME/config" \
+    -u "$NVF_HOME/config/init.lua" \
+    "$@"

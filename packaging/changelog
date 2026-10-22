@@ -1,0 +1,13 @@
+nvim-forge (1.0.0) jammy; urgency=medium
+
+  * Initial release.
+  * Neovim 0.12.6 with pinned plugins: nvim-treesitter, nvim-lspconfig,
+    nvim-cmp (+ cmp-nvim-lsp, cmp-buffer), LuaSnip + friendly-snippets,
+    lualine.nvim, nvim-autopairs, telescope.nvim + plenary.nvim.
+  * Tree-sitter parsers (python, c, cpp, rust) pre-built for amd64.
+  * Language servers: BasedPyright 1.40.2 (bundled Node.js 24.22.0),
+    clangd 23.1.0, rust-analyzer 1.99.1 with Rust toolchain 1.99.1
+    (cargo, rustc, rust-std, rust-src).
+  * Fully offline operation; per-user XDG state directories.
+
+ -- nvim-forge Maintainers <nvim-forge@localhost>  Tue, 20 Oct 2026 15:00:00 +0000

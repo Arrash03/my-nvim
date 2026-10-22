@@ -1,0 +1,158 @@
+{
+  "_comment": "Pinned upstream artifacts for nvim-forge. sha256 == null means 'self-pinned': scripts/fetch.sh records the computed digest in pins-locked.json on first fetch and verifies it on every later fetch. Artifacts with upstream checksums (node, rust) are additionally verified against the upstream checksum files at fetch time.",
+  "format": 1,
+  "target": {
+    "os": "Ubuntu 22.04 LTS (jammy) and newer glibc>=2.35 Ubuntu releases",
+    "arch": "amd64 / x86_64",
+    "glibc_baseline": "2.35"
+  },
+  "artifacts": {
+    "ubuntu_base": {
+      "version": "22.04.5",
+      "url": "https://cdimage.ubuntu.com/ubuntu-base/releases/22.04/release/ubuntu-base-22.04.5-base-amd64.tar.gz",
+      "sha256": "242cd8898b33ea806ef5f13b1076ed7c76f9f989d18384452f7166692438ff1a",
+      "upstream_check": "cdimage.ubuntu.com SHA256SUMS (https)"
+    },
+    "nvim": {
+      "version": "0.12.6",
+      "url": "https://github.com/neovim/neovim/releases/download/v0.12.6/nvim-linux-x86_64.tar.gz",
+      "sha256": null,
+      "upstream_check": "self (GitHub release has no published checksum)"
+    },
+    "node": {
+      "version": "24.22.0",
+      "url": "https://nodejs.org/dist/v24.22.0/node-v24.22.0-linux-x64.tar.xz",
+      "sha256": null,
+      "upstream_check": "nodejs.org SHASUMS256.txt (https)"
+    },
+    "basedpyright": {
+      "version": "1.40.2",
+      "url": "https://registry.npmjs.org/basedpyright/-/basedpyright-1.40.2.tgz",
+      "sha256": null,
+      "upstream_check": "npm registry dist.integrity (sha512)"
+    },
+    "clangd": {
+      "version": "23.1.0",
+      "url": "https://github.com/clangd/clangd/releases/download/23.1.0/clangd-linux-23.1.0.zip",
+      "sha256": null,
+      "upstream_check": "self (release has no published checksum)"
+    },
+    "rust_channel_toml": {
+      "version": "1.99.1",
+      "url": "https://static.rust-lang.org/dist/channel-rust-1.99.1.toml",
+      "sha256": null,
+      "upstream_check": "self; component hashes inside the toml are verified individually"
+    },
+    "rustc": { "from_toml": "rustc", "target": "x86_64-unknown-linux-gnu" },
+    "cargo": { "from_toml": "cargo", "target": "x86_64-unknown-linux-gnu" },
+    "rust_std": { "from_toml": "rust-std", "target": "x86_64-unknown-linux-gnu" },
+    "rust_src": { "from_toml": "rust-src", "target": null },
+    "rust_analyzer": { "from_toml": "rust-analyzer-preview", "target": "x86_64-unknown-linux-gnu" },
+    "ts_grammar_python": {
+      "version": "v0.25.0",
+      "url": "https://github.com/tree-sitter/tree-sitter-python/archive/refs/tags/v0.25.0.tar.gz",
+      "sha256": null,
+      "pinned_to": "nvim-treesitter main@29212d82 parsers.lua revision",
+      "upstream_check": "self"
+    },
+    "ts_grammar_c": {
+      "version": "b780e47fc780ddc8da13afa35a3f4ed5c157823d",
+      "url": "https://github.com/tree-sitter/tree-sitter-c/archive/b780e47fc780ddc8da13afa35a3f4ed5c157823d.tar.gz",
+      "sha256": null,
+      "pinned_to": "nvim-treesitter main@29212d82 parsers.lua revision",
+      "upstream_check": "self"
+    },
+    "ts_grammar_cpp": {
+      "version": "c009222808634c1014f82438d4883753516a2c24",
+      "url": "https://github.com/tree-sitter/tree-sitter-cpp/archive/c009222808634c1014f82438d4883753516a2c24.tar.gz",
+      "sha256": null,
+      "pinned_to": "nvim-treesitter main@29212d82 parsers.lua revision",
+      "upstream_check": "self"
+    },
+    "ts_grammar_rust": {
+      "version": "77a3747266f4d621d0757825e6b11edcbf991ca5",
+      "url": "https://github.com/tree-sitter/tree-sitter-rust/archive/77a3747266f4d621d0757825e6b11edcbf991ca5.tar.gz",
+      "sha256": null,
+      "pinned_to": "nvim-treesitter main@29212d82 parsers.lua revision",
+      "upstream_check": "self"
+    },
+    "plugin_nvim-treesitter": {
+      "version": "29212d826054bb2948fa9d3a99eca9bf6a050eb2",
+      "url": "https://github.com/nvim-treesitter/nvim-treesitter/archive/29212d826054bb2948fa9d3a99eca9bf6a050eb2.tar.gz",
+      "sha256": null,
+      "upstream_check": "self (commit-pinned)"
+    },
+    "plugin_nvim-lspconfig": {
+      "version": "45a3a444b710511c39abca3b60bb6e23a21e3de5",
+      "url": "https://github.com/neovim/nvim-lspconfig/archive/45a3a444b710511c39abca3b60bb6e23a21e3de5.tar.gz",
+      "sha256": null,
+      "upstream_check": "self (commit-pinned)"
+    },
+    "plugin_nvim-cmp": {
+      "version": "2ffe79f1f021def8dd1fcd81deb16f1bb0d989f3",
+      "url": "https://github.com/hrsh7th/nvim-cmp/archive/2ffe79f1f021def8dd1fcd81deb16f1bb0d989f3.tar.gz",
+      "sha256": null,
+      "upstream_check": "self (commit-pinned)"
+    },
+    "plugin_cmp-nvim-lsp": {
+      "version": "cbc7b02bb99fae35cb42f514762b89b5126651ef",
+      "url": "https://github.com/hrsh7th/cmp-nvim-lsp/archive/cbc7b02bb99fae35cb42f514762b89b5126651ef.tar.gz",
+      "sha256": null,
+      "upstream_check": "self (commit-pinned)"
+    },
+    "plugin_cmp-buffer": {
+      "version": "b74fab3656eea9de20a9b8116afa3cfc4ec09657",
+      "url": "https://github.com/hrsh7th/cmp-buffer/archive/b74fab3656eea9de20a9b8116afa3cfc4ec09657.tar.gz",
+      "sha256": null,
+      "upstream_check": "self (commit-pinned)"
+    },
+    "plugin_LuaSnip": {
+      "version": "0abc8f390b278c3b4aabc4c004ac8a088b65cf24",
+      "url": "https://github.com/L3MON4D3/LuaSnip/archive/0abc8f390b278c3b4aabc4c004ac8a088b65cf24.tar.gz",
+      "sha256": null,
+      "upstream_check": "self (commit-pinned)"
+    },
+    "plugin_friendly-snippets": {
+      "version": "b4d01b0fdf3c9a549961c2f9ffe8dc09be166219",
+      "url": "https://github.com/rafamadriz/friendly-snippets/archive/b4d01b0fdf3c9a549961c2f9ffe8dc09be166219.tar.gz",
+      "sha256": null,
+      "upstream_check": "self (commit-pinned)"
+    },
+    "plugin_lualine.nvim": {
+      "version": "221ce6b2d999187044529f49da6554a92f740a96",
+      "url": "https://github.com/nvim-lualine/lualine.nvim/archive/221ce6b2d999187044529f49da6554a92f740a96.tar.gz",
+      "sha256": null,
+      "upstream_check": "self (commit-pinned)"
+    },
+    "plugin_nvim-autopairs": {
+      "version": "3172f40c16563db871a58f20d205c710ad782311",
+      "url": "https://github.com/windwp/nvim-autopairs/archive/3172f40c16563db871a58f20d205c710ad782311.tar.gz",
+      "sha256": null,
+      "upstream_check": "self (commit-pinned)"
+    },
+    "plugin_telescope.nvim": {
+      "version": "40aedd8a68c78a656a10a8d62d80c54af59420fb",
+      "url": "https://github.com/nvim-telescope/telescope.nvim/archive/40aedd8a68c78a656a10a8d62d80c54af59420fb.tar.gz",
+      "sha256": null,
+      "upstream_check": "self (commit-pinned)"
+    },
+    "plugin_plenary.nvim": {
+      "version": "74b06c6c75e4eeb3108ec01852001636d85a932b",
+      "url": "https://github.com/nvim-lua/plenary.nvim/archive/74b06c6c75e4eeb3108ec01852001636d85a932b.tar.gz",
+      "sha256": null,
+      "upstream_check": "self (commit-pinned)"
+    },
+    "plugin_nvim-tree.lua": {
+      "version": "9a2e0006d42f292eb3ade7dfdff201a7429a780c",
+      "url": "https://github.com/nvim-tree/nvim-tree.lua/archive/9a2e0006d42f292eb3ade7dfdff201a7429a780c.tar.gz",
+      "sha256": null,
+      "upstream_check": "self (commit-pinned; master == v1.19.0 release)"
+    },
+    "plugin_nvim-web-devicons": {
+      "version": "ec309a0eaff6ea967e58c275996155ab5c16938d",
+      "url": "https://github.com/nvim-tree/nvim-web-devicons/archive/ec309a0eaff6ea967e58c275996155ab5c16938d.tar.gz",
+      "sha256": null,
+      "upstream_check": "self (commit-pinned; required dependency of nvim-tree)"
+    }
+  }
+}

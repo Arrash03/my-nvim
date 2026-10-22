@@ -1,0 +1,25 @@
+# nvim-forge .gitignore
+#
+# Everything below is either a downloaded artifact or a derived build
+# product that scripts/build-all.sh recreates from the pinned manifest.
+
+# Downloaded, checksum-verified upstream artifacts (1.5G)
+/cache/
+
+# Staged install tree and intermediate extractions (1.2G)
+/build/
+
+# proot Ubuntu 22.04 rootfs images for build/test sandboxes (328M)
+/sandbox/
+
+# The packaged binary itself (287M); its checksum and the test report
+# stay tracked as the record of each release build.
+/dist/*.deb
+
+# Tooling debris
+*.log
+*.tmp
+*.swp
+*~
+.DS_Store
+.~lock.*#
