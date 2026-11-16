@@ -20,10 +20,16 @@ if ! grep -q '^Installed-Size:' "$DEBIAN/control"; then
 fi
 
 # md5sums for all installed files.
-( cd "$STAGE_DIR/root" && find opt usr -type f -print0 | xargs -0 md5sum ) > "$DEBIAN/md5sums"
+( cd "$STAGE_DIR/root" && find opt usr etc -type f -print0 | xargs -0 md5sum ) > "$DEBIAN/md5sums"
 
-# No maintainer scripts on purpose: installation performs no network
-# access and makes no system-wide configuration changes.
+# Maintainer scripts: only a guarded `fc-cache -f` (see packaging/postinst)
+# so the bundled Nerd Font symbols are picked up immediately.  No network
+# access and no other system-wide configuration changes.
+for script in postinst postrm; do
+  if [[ -f "$NVF_ROOT/packaging/$script" ]]; then
+    install -m 0755 "$NVF_ROOT/packaging/$script" "$DEBIAN/$script"
+  fi
+done
 
 log "building .deb (xz compression)"
 mkdir -p "$DIST_DIR"

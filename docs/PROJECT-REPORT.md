@@ -18,16 +18,19 @@ A complete, self-contained, **offline** Neovim distribution for Ubuntu
 
 | File | Size | Notes |
 |---|---|---|
-| `dist/nvim-forge_1.0.0_amd64.deb` | 287 MB | ~1.17 GB installed |
+| `dist/nvim-forge_1.0.0_amd64.deb` | 289 MB | ~1.18 GB installed |
 | `dist/SHA256SUMS` | — | checksum of the .deb |
 | `dist/TEST-REPORT.md` | — | offline acceptance results |
 
 SHA-256 of the .deb:
-`0fb7380fe7e82974de5ba77e4a452239f5462dd3edb168ae29cba1bf3f034de2`
+`4c094361204d14dbea1eff90a42546d4dcec332ce1bb3fe843fcce926504e49c`
 
 Package metadata: `Depends: libc6 (>= 2.35), libgcc-s1, libstdc++6`,
-`Architecture: amd64`, no maintainer scripts (install makes no system
-changes, needs no network).
+`Recommends: fontconfig`, `Architecture: amd64`. The only maintainer scripts
+are a guarded `fc-cache -f` in `postinst`/`postrm` so the bundled Symbols
+Nerd Font (installed under `/usr/share/fonts/truetype/nvim-forge/` with a
+fontconfig fallback rule in `/etc/fonts/conf.d/`) is picked up immediately;
+installation makes no network access and no other system changes.
 
 ## 3. Bundled versions
 
@@ -40,12 +43,13 @@ changes, needs no network).
 | Rust toolchain | 1.99.1 (rustc, cargo, rust-std, rust-src) |
 | rust-analyzer | 1.99.1 (+ proc-macro server inside rustc) |
 | Tree-sitter parsers | python v0.25.0, c b780e47f, cpp c0092228, rust 77a37472 |
+| Icons | Symbols Nerd Font 3.5.1 (Nerd Fonts) + fontconfig fallback rule |
 | Plugins | 13, commit-pinned (nvim-treesitter, nvim-lspconfig, nvim-cmp, cmp-nvim-lsp, cmp-buffer, LuaSnip, friendly-snippets, lualine.nvim, nvim-autopairs, telescope.nvim, plenary.nvim, nvim-tree.lua + nvim-web-devicons) |
 | Theme | custom "forge" (Kanagawa Dragon-derived, bg ≈ #0D0F12) |
 
 All pins live in `manifest/pins.json` + `manifest/pins-locked.json`
 (SHA-256 self-pinned; Node/Rust additionally verified against upstream
-checksum files at fetch time). License texts of all 21 components ship in
+checksum files at fetch time). License texts of all 22 components ship in
 `/opt/nvim-forge/licenses/`.
 
 ## 4. Use / uninstall
@@ -71,9 +75,9 @@ Individual steps: `fetch.sh` (download+verify pins) → `sandbox.sh`
 (prepare Ubuntu 22.04 proot rootfses) → `build-parsers.sh` (compile
 grammars inside the 22.04 sandbox) → `stage.sh` (assemble /opt tree) →
 `check-elf.sh` (ldd + glibc ceilings) → `build-deb.sh` → `verify.sh`
-(15-check offline acceptance suite, writes `dist/TEST-REPORT.md`).
+(16-check offline acceptance suite, writes `dist/TEST-REPORT.md`).
 
-## 6. Test results — 15/15 PASS
+## 6. Test results — 16/16 PASS
 
 Run in a pristine ubuntu-base-22.04.5 rootfs (see §8 for why proot):
 
@@ -90,7 +94,8 @@ Run in a pristine ubuntu-base-22.04.5 rootfs (see §8 for why proot):
 | T12 | bundle read-only (write probe refused), editor still starts |
 | T13 | fully offline: startup + all 3 servers with sockets blocked; strace saw 0 AF_INET syscalls |
 | T14 | no hardcoded `/home` paths in config/launcher |
-| T15 | `dpkg -r` removes bundle+launcher; system nvim and user state kept |
+| T15 | icons: Symbols Nerd Font + fontconfig fallback installed; explorer uses nerd glyphs |
+| T16 | `dpkg -r` removes bundle+launcher; system nvim and user state kept |
 
 ELF audit ceilings: max `GLIBC_2.34`, max `GLIBCXX_3.4.21` — inside the
 Ubuntu 22.04 baseline (2.35 / 3.4.30). glibc/libstdc++ are never bundled;
@@ -142,7 +147,8 @@ nvim-forge/
   dist/              .deb, SHA256SUMS, TEST-REPORT.md
   docs/CHEATSHEET.md user keymap/command reference
   manifest/          pins.json, pins-locked.json, MANIFEST.md
-  packaging/         control.in, changelog, copyright, launcher
+  packaging/         control.in, changelog, copyright, launcher, postinst,
+                     postrm (fontcache refresh only)
   scripts/           build-all.sh + individual pipeline steps
   sandbox/           proot rootfses (build + test)
   tests/             netguard.c, startup.lua, treesitter.lua,

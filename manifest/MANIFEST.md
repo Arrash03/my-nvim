@@ -52,6 +52,17 @@ Pinned to the revisions declared by nvim-treesitter `main@29212d82`
 | nvim-tree.lua    | 9a2e0006d42f292eb3ade7dfdff201a7429a780c (v1.19.0)           |
 | nvim-web-devicons| ec309a0eaff6ea967e58c275996155ab5c16938d                     |
 
+## Fonts
+
+| Artifact | Version | Upstream check |
+|---|---|---|
+| Symbols Nerd Font / Symbols Nerd Font Mono | 3.5.1 | GitHub release asset digest (sha256) |
+
+Installed under `/usr/share/fonts/truetype/nvim-forge/` together with the
+upstream fontconfig fallback rule (`/etc/fonts/conf.d/10-nerd-font-symbols.conf`)
+so Nerd Font glyphs used by the file explorer render in fontconfig-based
+terminals without changing the terminal font.
+
 ## Legal
 
 Every bundled component's license text is installed under

@@ -189,7 +189,8 @@ for name in ubuntu_base nvim clangd ts_grammar_python ts_grammar_c ts_grammar_cp
             plugin_nvim-treesitter plugin_nvim-lspconfig plugin_nvim-cmp plugin_cmp-nvim-lsp \
             plugin_cmp-buffer plugin_LuaSnip plugin_friendly-snippets plugin_lualine.nvim \
             plugin_nvim-autopairs plugin_telescope.nvim plugin_plenary.nvim \
-            plugin_nvim-tree.lua plugin_nvim-web-devicons; do
+            plugin_nvim-tree.lua plugin_nvim-web-devicons \
+            nerd_fonts_symbols; do
   fetch_generic "$name"
 done
 fetch_node

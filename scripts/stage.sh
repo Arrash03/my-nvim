@@ -127,6 +127,22 @@ find "$OPT/plugins" -maxdepth 2 -iname 'LICENSE*' | while read -r f; do
   cp -a "$f" "$OPT/licenses/plugin-$comp-LICENSE" 2>/dev/null || true
 done
 
+# ------------------------------------------------------------------ fonts --
+# nvim-tree / nvim-web-devicons draw Nerd Font private-use glyphs.  The
+# symbols-only font plus its fontconfig rule make those glyphs render via
+# fontconfig fallback in any terminal (Ubuntu Mono, DejaVu Sans Mono, ...),
+# so icons work without the user changing the terminal font.
+log "staging Nerd Fonts symbol font (terminal icons)"
+FONTSRC="$CACHE_DIR/fonts-extract"
+rm -rf "$FONTSRC"; mkdir -p "$FONTSRC"
+tar xJf "$DL_DIR/$(fj nerd_fonts_symbols)" -C "$FONTSRC" \
+  SymbolsNerdFont-Regular.ttf SymbolsNerdFontMono-Regular.ttf \
+  10-nerd-font-symbols.conf LICENSE
+mkdir -p "$R/usr/share/fonts/truetype/nvim-forge" "$R/etc/fonts/conf.d"
+cp -a "$FONTSRC"/SymbolsNerdFont*.ttf "$R/usr/share/fonts/truetype/nvim-forge/"
+cp -a "$FONTSRC/10-nerd-font-symbols.conf" "$R/etc/fonts/conf.d/10-nerd-font-symbols.conf"
+cp -a "$FONTSRC/LICENSE" "$OPT/licenses/nerd-fonts-LICENSE"
+
 # ---------------------------------------------------------------- parsers --
 log "staging Tree-sitter parsers"
 cp -a "$BUILD_DIR/parsers/parser/"*.so "$OPT/parsers/parser/"

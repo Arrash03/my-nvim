@@ -19,7 +19,8 @@
 #   T12  bundle is read-only at runtime
 #   T13  network independence (netguard LD_PRELOAD + strace audit)
 #   T14  no hardcoded home paths in config/launcher
-#   T15  clean removal via dpkg -r (system Neovim + user state kept)
+#   T15  icon support: Symbols Nerd Font + fontconfig fallback rule
+#   T16  clean removal via dpkg -r (system Neovim + user state kept)
 #
 # Writes dist/TEST-REPORT.md.  Exit code = number of failed checks.
 # ---------------------------------------------------------------------------
@@ -247,7 +248,28 @@ else
   row FAIL T14 "hardcoded home paths" "$OUT"
 fi
 
-# ------------------------------------------------------ T15 clean removal
+# --------------------------------------------------------- T15 icon support
+sroot /bin/bash -c '
+  ls /usr/share/fonts/truetype/nvim-forge/*.ttf 2>/dev/null | wc -l
+  [ -f /etc/fonts/conf.d/10-nerd-font-symbols.conf ] && echo conf-ok
+  [ -f /opt/nvim-forge/licenses/nerd-fonts-LICENSE ] && echo license-ok'
+ttf_n=$(grep -oE '^[0-9]+$' <<<"$OUT" | head -1 || true)
+conf_ok=no; license_ok=no
+have conf-ok && conf_ok=yes
+have license-ok && license_ok=yes
+sroot /usr/bin/env HOME=/root /usr/bin/nvim-forge --headless --cmd 'set nomore' \
+  -c 'lua io.write("NVF-ICONS-MODE=" .. tostring(vim.g.nvf_icons_mode) .. "\n")' \
+  -c 'qa!'
+icons_mode=$(sed -n 's/^NVF-ICONS-MODE=//p' <<<"$OUT" | head -1)
+if [[ "${ttf_n:-0}" -ge 2 && "$conf_ok" == yes && "$license_ok" == yes \
+   && "$icons_mode" == nerd ]]; then
+  row PASS T15 "icons: Symbols Nerd Font ($ttf_n faces) + fontconfig fallback; explorer uses nerd glyphs"
+else
+  row FAIL T15 "icon font setup" \
+    "ttf=${ttf_n:-0} conf=$conf_ok license=$license_ok mode=${icons_mode:-?} ${OUT//$'\n'/ }"
+fi
+
+# ------------------------------------------------------ T16 clean removal
 sroot /bin/bash -c 'dpkg -r nvim-forge </dev/null'
 rm_rc=$RC; rm_out=$OUT
 sroot /bin/bash -c '
@@ -258,9 +280,9 @@ sroot /bin/bash -c '
   [ -d /home/tester/.local/state/nvim-forge ] && echo user-state-kept'
 if [[ $rm_rc -eq 0 ]] && have opt-gone && have launcher-gone \
    && have "$SYS_MD5" && have user-state-kept; then
-  row PASS T15 "dpkg -r removes bundle + launcher; system nvim and user state kept"
+  row PASS T16 "dpkg -r removes bundle + launcher; system nvim and user state kept"
 else
-  row FAIL T15 "clean removal" "rc=$rm_rc ${OUT//$'\n'/ }"
+  row FAIL T16 "clean removal" "rc=$rm_rc ${OUT//$'\n'/ }"
 fi
 
 # --------------------------------------------------------------- report

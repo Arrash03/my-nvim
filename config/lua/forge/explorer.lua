@@ -17,6 +17,20 @@ if not ok then
   return
 end
 
+-- Icon support ---------------------------------------------------------------
+-- Nerd Font glyphs are private-use codepoints and only render when a Nerd
+-- Font is available.  The .deb installs Symbols Nerd Font plus a fontconfig
+-- fallback rule; where that is missing (e.g. a source checkout on a machine
+-- without Nerd Fonts) fall back to plain arrows so the tree stays readable.
+-- Override with NVF_ICONS=nerd or NVF_ICONS=ascii.
+local icon_mode = vim.env.NVF_ICONS
+if not icon_mode or icon_mode == '' then
+  icon_mode = vim.fn.glob('/usr/share/fonts/truetype/nvim-forge/*.ttf') ~= ''
+    and 'nerd' or 'ascii'
+end
+local use_nerd_icons = icon_mode ~= 'ascii'
+vim.g.nvf_icons_mode = icon_mode  -- exposed for troubleshooting/tests
+
 nt.setup({
   -- Take over netrw's directory browsing so `nvim-forge .` shows the tree.
   hijack_netrw = true,
@@ -30,13 +44,25 @@ nt.setup({
     preserve_window_proportions = true,
   },
 
+  -- VS Code-like behaviour: automatically reveal/highlight the file you are
+  -- editing, wherever you navigate.
+  update_focused_file = {
+    enable = true,
+    update_root = { enable = false },
+  },
+
   renderer = {
     group_empty = true,
     highlight_git = false,
     full_name = false,
+    highlight_opened_files = 'all',
     indent_markers = { enable = true },
-    icons = {
+    icons = use_nerd_icons and {
       show = { file = true, folder = true, folder_arrow = true, git = false },
+    } or {
+      -- No Nerd Font: show plain arrows instead of empty boxes.
+      show = { file = false, folder = false, folder_arrow = true, git = false },
+      glyphs = { folder = { arrow_closed = '▸', arrow_open = '▾' } },
     },
   },
 
@@ -84,5 +110,27 @@ vim.api.nvim_create_autocmd('FileType', {
       vim.tbl_extend('force', b, { desc = 'Close explorer' }))
     vim.keymap.set('n', 'q', api.tree.close,
       vim.tbl_extend('force', b, { desc = 'Close explorer' }))
+  end,
+})
+
+-- Open the explorer automatically at startup, like VS Code ------------------
+-- Skipped for headless/embedded sessions, stdin, diff mode, commit-message
+-- buffers, and when NVF_NO_TREE=1 is set in the environment.
+vim.api.nvim_create_autocmd('VimEnter', {
+  once = true,
+  callback = function()
+    if vim.env.NVF_NO_TREE and vim.env.NVF_NO_TREE ~= '' then
+      return
+    end
+    if #vim.api.nvim_list_uis() == 0 then return end   -- --headless / --embed
+    if vim.o.diff then return end                      -- nvim -d
+    if vim.fn.argc() == 1 and vim.fn.argv(0) == '-' then return end
+    local ft = vim.bo.filetype
+    if ft == 'gitcommit' or ft == 'gitrebase' or ft == 'git' then return end
+
+    pcall(api.tree.open)
+    -- Do not steal focus from the editor (VS Code keeps the cursor in the
+    -- text buffer when the explorer is shown); harmless with one window.
+    pcall(vim.cmd, 'wincmd p')
   end,
 })

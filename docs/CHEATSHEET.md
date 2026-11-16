@@ -85,7 +85,9 @@ Inside any Telescope picker:
 | `<Esc>` | close picker |
 
 Inside the file explorer (`<leader>e` opens it as a left sidebar; opening a
-file keeps the tree visible):
+file keeps the tree visible). **It also opens automatically when
+nvim-forge starts** (like VS Code's explorer) and highlights the file you
+are editing; start with `NVF_NO_TREE=1 nvim-forge` to disable that.
 
 | Keys | Action |
 |---|---|
@@ -103,6 +105,11 @@ file keeps the tree visible):
 | `I` | toggle icon visibility |
 | `g?` | all-key help inside the tree |
 | `q` / `<Esc>` | close the explorer |
+
+Icons: the package installs Symbols Nerd Font and a fontconfig fallback rule,
+so file/folder icons show up in normal terminals. If you still see empty
+boxes, run with `NVF_ICONS=ascii nvim-forge` for plain `▸`/`▾` arrows (or
+`NVF_ICONS=nerd` to force Nerd Font glyphs after installing such a font).
 
 ## 4. Editing
 

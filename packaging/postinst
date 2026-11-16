@@ -1,0 +1,9 @@
+#!/bin/sh
+# Refresh the font cache after the bundled Nerd Font symbols are installed,
+# so terminal icon glyphs render immediately (fontconfig fallback).
+# No network access, no other system changes.
+set -e
+if [ -x /usr/bin/fc-cache ]; then
+  fc-cache -f >/dev/null 2>&1 || true
+fi
+exit 0

@@ -22,6 +22,7 @@ downloads, no Mason, no npm/rustup/git/compiler needed on the target machine.
 | rust-analyzer        | 1.99.1     | Rust LSP server + proc-macro server          |
 | Tree-sitter parsers  | pinned     | python, c, cpp, rust (prebuilt `.so`)        |
 | Plugins              | commit-pin | see `manifest/pins.json`                     |
+| Icons (font)         | 3.5.1      | Symbols Nerd Font + fontconfig fallback rule |
 | Theme                | —          | Kanagawa Dragon-derived "forge" dark theme   |
 
 Plugins: `nvim-treesitter`, `nvim-lspconfig`, `nvim-cmp`, `cmp-nvim-lsp`,
@@ -71,6 +72,22 @@ particular home directory, and no root privileges are required to run it.
 | `<leader>ff`    | find files (Telescope)                       |
 | `<leader>fg`    | live grep                                    |
 
+### File explorer
+
+The sidebar opens automatically at startup (like VS Code) and keeps the
+currently edited file highlighted; `<leader>e` toggles it, `<leader>E`
+reveals the current file. Set `NVF_NO_TREE=1` in the environment to start
+without it. Inside the tree: `<CR>` open, `<C-v>`/`<C-x>` split, `a`
+create, `r` rename, `d` delete, `x`/`c`/`p` cut/copy/paste, `.` show
+hidden files, `g?` full key help, `q`/`<Esc>` close.
+
+File and folder icons are Nerd Font glyphs. The package installs **Symbols
+Nerd Font** plus a fontconfig rule that adds it as a fallback for common
+monospace families (Ubuntu Mono, DejaVu Sans Mono, Liberation Mono, JetBrains
+Mono, …), so the icons render without changing your terminal font. On a
+terminal that does not use fontconfig, set `NVF_ICONS=ascii` to get plain
+`▸`/`▾` arrows instead of empty boxes; `NVF_ICONS=nerd` forces the glyphs.
+
 ### Language servers
 
 * **Python** – BasedPyright; a project virtualenv (`/.venv`, `/venv`,
@@ -98,6 +115,9 @@ LSP is wired through Neovim's native `vim.lsp.config()` /
   manifest/                pins.json, pins-locked.json, MANIFEST.md
   licenses/                license texts of every bundled component
 /usr/bin/nvim-forge        launcher script
+
+/usr/share/fonts/truetype/nvim-forge/SymbolsNerdFont*.ttf   icon glyphs
+/etc/fonts/conf.d/10-nerd-font-symbols.conf                 fallback rule
 ```
 
 A custom static runtimepath loader is used instead of lazy.nvim so that no
@@ -145,7 +165,7 @@ a clean Ubuntu 24.04 runner:
 3. restores the checksum-pinned download cache (keyed on
    `manifest/pins-locked.json`),
 4. runs `scripts/build-all.sh` (fetch + verify pins → 22.04 sandbox →
-   Tree-sitter parsers → stage → ELF audit → .deb → 15-check suite),
+   Tree-sitter parsers → stage → ELF audit → .deb → 16-check suite),
 5. uploads the .deb / SHA256SUMS / TEST-REPORT.md as run artifacts, and
 6. re-publishes them on the rolling **`continuous`** prerelease (the tag and
    release are refreshed in place on every push; the release notes carry the
