@@ -1,7 +1,7 @@
 name: Build & Deploy .deb
 
 # Every push to master rebuilds the offline Neovim distribution from the
-# pinned manifest, runs the full 15-check acceptance suite inside the
+# pinned manifest, runs the full 16-check acceptance suite inside the
 # Ubuntu 22.04 proot sandbox, and re-publishes the .deb as a rolling
 # "continuous" GitHub Release (plus a build artifact for the run).
 
@@ -71,7 +71,7 @@ jobs:
           sha=$(sha256sum "${deb[0]}" | cut -d' ' -f1)
           size=$(du -h "${deb[0]}" | cut -f1)
           passed=$(grep -cE '\| PASS \|$' dist/TEST-REPORT.md || true)
-          total=$(grep -cE '^| T[0-9]+' dist/TEST-REPORT.md || true)
+          total=$(grep -cE '^\| T[0-9]+' dist/TEST-REPORT.md || true)
 
           tag=continuous
           {
