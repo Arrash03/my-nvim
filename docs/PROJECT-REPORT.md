@@ -23,7 +23,7 @@ A complete, self-contained, **offline** Neovim distribution for Ubuntu
 | `dist/TEST-REPORT.md` | — | offline acceptance results |
 
 SHA-256 of the .deb:
-`4c094361204d14dbea1eff90a42546d4dcec332ce1bb3fe843fcce926504e49c`
+`36f78a6bbbf082e4222b9009a8ed91db326649c7e03bc1d21a2643342218a089`
 
 Package metadata: `Depends: libc6 (>= 2.35), libgcc-s1, libstdc++6`,
 `Recommends: fontconfig`, `Architecture: amd64`. The only maintainer scripts

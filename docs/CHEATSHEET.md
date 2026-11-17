@@ -84,14 +84,19 @@ Inside any Telescope picker:
 | `<Tab>` then `<CR>` | multi-select several entries and open all |
 | `<Esc>` | close picker |
 
-Inside the file explorer (`<leader>e` opens it as a left sidebar; opening a
-file keeps the tree visible). **It also opens automatically when
-nvim-forge starts** (like VS Code's explorer) and highlights the file you
-are editing; start with `NVF_NO_TREE=1 nvim-forge` to disable that.
+Inside the file explorer (`<leader>e` opens/toggles it as a left sidebar;
+opening a file keeps the tree visible). **It also opens automatically when
+nvim-forge starts** (like VS Code's explorer), always at the **first level**
+of the current directory. It never auto-expands to a file — expand folders
+yourself with `Enter`/`o`/double-click to reach any level. Start with
+`NVF_NO_TREE=1 nvim-forge` to disable the sidebar.
 
 | Keys | Action |
 |---|---|
-| `<CR>` / `o` | open file (keeps tree open) / open and close tree |
+| `<CR>` / `o` / double-click | open file or expand/collapse folder (keeps tree open) |
+| `E` / `W` | expand all folders / collapse all back to first level |
+| `<BS>` | close the parent folder and jump to it |
+| `<leader>E` (from editor) | reveal current file — expands its parent folders |
 | `<C-x>` / `<C-v>` / `<C-t>` | open in vertical / horizontal split / new tab |
 | `a` | create file or directory (trailing `/` = directory) |
 | `A` | create file/directory without moving the cursor |

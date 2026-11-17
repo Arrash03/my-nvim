@@ -74,12 +74,16 @@ particular home directory, and no root privileges are required to run it.
 
 ### File explorer
 
-The sidebar opens automatically at startup (like VS Code) and keeps the
-currently edited file highlighted; `<leader>e` toggles it, `<leader>E`
-reveals the current file. Set `NVF_NO_TREE=1` in the environment to start
-without it. Inside the tree: `<CR>` open, `<C-v>`/`<C-x>` split, `a`
-create, `r` rename, `d` delete, `x`/`c`/`p` cut/copy/paste, `.` show
-hidden files, `g?` full key help, `q`/`<Esc>` close.
+The sidebar opens automatically at startup (like VS Code) showing only the
+**first level** of the current directory — even when you open a file in a
+nested folder. Open folders on demand with `Enter`/`o`/double-click to reach
+any level; `E` expands everything and `W` collapses everything back to the
+first level. `<leader>e` toggles the tree (reopens at first level),
+`<leader>E` explicitly reveals the current file, expanding its parent
+folders. Set `NVF_NO_TREE=1` in the environment to start without it. Inside
+the tree: `<CR>` open, `<C-v>`/`<C-x>` split, `a` create, `r` rename, `d`
+delete, `x`/`c`/`p` cut/copy/paste, `.` show hidden files, `g?` full key
+help, `q`/`<Esc>` close.
 
 File and folder icons are Nerd Font glyphs. The package installs **Symbols
 Nerd Font** plus a fontconfig rule that adds it as a fallback for common

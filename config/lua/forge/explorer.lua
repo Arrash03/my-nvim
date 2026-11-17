@@ -44,10 +44,12 @@ nt.setup({
     preserve_window_proportions = true,
   },
 
-  -- VS Code-like behaviour: automatically reveal/highlight the file you are
-  -- editing, wherever you navigate.
+  -- First level only by default: do not auto-expand the tree to reveal the
+  -- current file.  Expand folders on demand with Enter/o/double-click, E for
+  -- all levels, W to collapse back to the first level, and <leader>E to
+  -- explicitly reveal the current file.
   update_focused_file = {
-    enable = true,
+    enable = false,
     update_root = { enable = false },
   },
 
@@ -94,7 +96,16 @@ nt.setup({
 -- Toggle mappings -----------------------------------------------------------
 local api = require('nvim-tree.api')
 local map = vim.keymap.set
-map('n', '<leader>e', api.tree.toggle,
+local function toggle_tree()
+  if api.tree.is_visible() then
+    api.tree.close()
+  else
+    api.tree.open()
+    -- Reopening always presents the first level; drill down on demand.
+    pcall(api.tree.collapse_all)
+  end
+end
+map('n', '<leader>e', toggle_tree,
   { desc = 'Toggle file explorer (nvim-tree)', nowait = true })
 map('n', '<leader>E', function()
   api.tree.find_file({ open = true, focus = true })
@@ -129,6 +140,7 @@ vim.api.nvim_create_autocmd('VimEnter', {
     if ft == 'gitcommit' or ft == 'gitrebase' or ft == 'git' then return end
 
     pcall(api.tree.open)
+    pcall(api.tree.collapse_all)
     -- Do not steal focus from the editor (VS Code keeps the cursor in the
     -- text buffer when the explorer is shown); harmless with one window.
     pcall(vim.cmd, 'wincmd p')

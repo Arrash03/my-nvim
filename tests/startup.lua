@@ -83,6 +83,9 @@ do
     check('explorer closes (NvimTree window gone)', c1 and not tree_win_open(), c2)
     local t1, t2 = pcall(nt_api.tree.toggle)
     check('explorer toggles', t1 and tree_win_open(), t2)
+    local cfg_ok, cfg = pcall(require, 'nvim-tree.config')
+    check('explorer stays at first level (no auto-reveal)',
+      cfg_ok and cfg.g.update_focused_file.enable == false)
     pcall(nt_api.tree.close)
   end
 end
