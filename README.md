@@ -64,7 +64,13 @@ particular home directory, and no root privileges are required to run it.
 | `gr`            | references                                   |
 | `K`             | hover documentation                          |
 | `<leader>rn`    | rename symbol                                |
-| `<leader>ca`    | code action                                  |
+| `<leader>ca`    | code action (choose from all available)      |
+| `<leader>cf`    | apply first clangd quick fix (or choose)      |
+| `<leader>lf`    | list/choose quick fixes only                 |
+| `<leader>fn`    | toggle "fix available" notices (C/C++ buffers)|
+| `<leader>lr` / `<leader>lc` | restart all LSP clients / clangd only |
+| `<leader>cd`    | set clangd `compile_commands.json` dir + restart |
+| `<leader>fi`    | toggle live diagnostics while typing         |
 | `[d` / `]d`     | prev / next diagnostic                       |
 | `<leader>e`     | toggle file explorer sidebar (nvim-tree)     |
 | `<leader>E`     | reveal current file in the explorer          |
@@ -96,13 +102,65 @@ terminal that does not use fontconfig, set `NVF_ICONS=ascii` to get plain
 
 * **Python** – BasedPyright; a project virtualenv (`/.venv`, `/venv`,
   `$VIRTUAL_ENV`) is auto-detected and put on the server's path.
-* **C/C++** – clangd; picks up `compile_commands.json` from the file's
-  directory upward.
+* **C/C++** – clangd (with clang-tidy); pick up `compile_commands.json` in any
+  of the ways described below.
 * **Rust** – rust-analyzer with inlay hints enabled; `RUST_SRC_PATH` points
   at the bundled `rust-src`.
 
 LSP is wired through Neovim's native `vim.lsp.config()` /
-`vim.lsp.enable()` API (no legacy setup calls).
+`vim.lsp.enable()` API (no legacy setup calls). `:lsp restart [client]`
+restarts servers (Neovim 0.12 built-in); `<leader>lr` restarts the clients
+attached to the current buffer and `<leader>lc` restarts clangd only.
+
+### C/C++: giving clangd a compile database
+
+clangd needs a compilation database (`compile_commands.json`) to know your
+include paths and defines. Any of these work, from most to least convenient:
+
+1. **Project root** — put `compile_commands.json` in your project root (or a
+   `build/` subdirectory). clangd searches upward from each source file and
+   finds it automatically. Nothing else to configure.
+2. **Project `.clangd` file** — if the database lives elsewhere, create a
+   `.clangd` file in the project root:
+
+   ```yaml
+   CompileFlags:
+     CompilationDatabase: /absolute/path/to/build
+   ```
+
+   clangd is launched with `--enable-config`, so this is read automatically.
+3. **Environment variable** — before starting nvim-forge:
+
+   ```sh
+   NVF_CLANGD_COMPILE_COMMANDS_DIR=/path/to/build nvim-forge src/main.c
+   ```
+
+4. **At runtime** — press `<leader>cd` (or run `:NVFCompileDB /path/to/build`).
+   It accepts a directory or the path to a `compile_commands.json` file,
+   updates clangd's `--compile-commands-dir` argument and restarts clangd, so
+   a newly generated database is picked up immediately. This also works when
+   clangd is not running yet — the new path is used when it next attaches.
+
+### Diagnostics, notifications and applying fixes
+
+While you edit, diagnostics appear as `E W I H` signs, virtual text (`●`) and
+underlines. `<leader>fi` toggles *live* updates while still in insert mode;
+`<leader>d` opens the full message and `[d` / `]d` jump between problems.
+
+For C/C++ files, press `<leader>fn` once to turn on "fix available" notices:
+when you rest the cursor on a diagnostic, nvim-forge tells you how many clangd
+quick fixes exist there. Then:
+
+* `<leader>ca` — choose from **all** code actions (refactors, source actions,
+  quick fixes, …) in a picker; selecting one applies it.
+* `<leader>lf` — same picker, filtered to quick fixes only.
+* `<leader>cf` — apply a single available quick fix immediately; if more than
+  one exists, the picker opens so you can choose.
+
+Put the cursor on the diagnostic (or select a range in visual mode) before
+opening the action menu — LSP code actions are requested for that position.
+
+Fixes are applied as normal LSP workspace edits, so `:undo` reverses them.
 
 ## Layout
 

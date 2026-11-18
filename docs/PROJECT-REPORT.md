@@ -23,7 +23,7 @@ A complete, self-contained, **offline** Neovim distribution for Ubuntu
 | `dist/TEST-REPORT.md` | — | offline acceptance results |
 
 SHA-256 of the .deb:
-`f0f31b240043b42e0c75f095b2b935a11cffcaf3f8474bb5957f2a18947b4160`
+`0e50b76c19c411fc613fa50e85496b3aba96449acb1e8f4411106a0ba9115833`
 
 Package metadata: `Depends: libc6 (>= 2.35), libgcc-s1, libstdc++6`,
 `Recommends: fontconfig`, `Architecture: amd64`. The only maintainer scripts
@@ -64,6 +64,19 @@ Keymaps and full usage: `docs/CHEATSHEET.md` (also in the repo).
 User state goes to `~/.local/state/nvim-forge`, `~/.cache/nvim-forge`,
 `~/.local/share/nvim-forge` — the bundle is read-only at runtime.
 
+C/C++ compile database and fixes can be handled entirely from the editor:
+`compile_commands.json` in the project root (or `build/`) is found
+automatically; a project `.clangd` file with
+`CompileFlags.CompilationDatabase` is honoured because clangd is launched
+with `--enable-config`; `NVF_CLANGD_COMPILE_COMMANDS_DIR=...` sets the path at
+launch; and `<leader>cd` / `:NVFCompileDB <dir>` changes it live and restarts
+clangd via Neovim 0.12's built-in `:lsp restart clangd`. `<leader>fn` opts in
+to "N fixes available" notices while the cursor rests on a diagnostic;
+`<leader>ca` (all actions), `<leader>lf` (quick fixes only) and `<leader>cf`
+(apply the first one) use the native LSP code-action picker and apply the
+result as a workspace edit, so `:undo` reverses it. `<leader>lr` restarts all
+LSP clients attached to the current buffer.
+
 ## 5. Rebuild from source
 
 ```sh
@@ -86,7 +99,7 @@ Run in a pristine ubuntu-base-22.04.5 rootfs (see §8 for why proot):
 | T01 | SHA256SUMS + package metadata |
 | T02 | clean `dpkg -i`; system `/usr/bin/nvim` untouched |
 | T03 | `nvim-forge --version` → NVIM v0.12.6 |
-| T04 | headless startup: theme, options, plugins, LSP config, exes |
+| T04 | headless startup: theme, options, plugins, LSP config (incl. `:lsp restart`, `:NVFCompileDB`, clangd `--enable-config`), exes |
 | T05 | Tree-sitter parses python/c/cpp/rust/markdown; highlighter attaches |
 | T06–T09 | LSP attach: basedpyright, clangd (c), clangd (cpp), rust_analyzer |
 | T10 | ldd over all 43 installed ELF files — nothing unresolved |

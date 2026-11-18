@@ -22,7 +22,8 @@ Leader = **Space**. Mode column: `n` normal, `i` insert, `v` visual, `t` termina
 ## 2. LSP (Python, C, C++, Rust)
 
 Buffer-local — active once the server attaches (automatic on opening a
-`.py` / `.c` / `.cpp` / `.rs` file; check with `:LspInfo`).
+`.py` / `.c` / `.cpp` / `.rs` file; check with `:checkhealth vim.lsp` or
+`:lua vim.print(vim.lsp.get_clients({bufnr=0}))`).
 
 | Keys | Mode | Action |
 |---|---|---|
@@ -34,11 +35,24 @@ Buffer-local — active once the server attaches (automatic on opening a
 | `K` | n | hover documentation (float) |
 | `<C-k>` | n | signature help (float) |
 | `<leader>rn` | n | rename symbol (all references) |
-| `<leader>ca` | n,v | code action |
+| `<leader>ca` | n,v | code action — choose from all actions, then apply |
+| `<leader>lf` | n,v | choose from **quick fixes only**, then apply |
+| `<leader>cf` | n,v | apply the first quick fix (picker if several) — cursor must be on the diagnostic |
+| `<leader>fn` | n | toggle clangd "fix available" notices (C/C++ only) |
 | `[d` / `]d` | n | previous / next diagnostic (float follows) |
 | `<leader>d` | n | show diagnostic details as float |
 | `<leader>ql` | n | diagnostics of this file → location list |
 | `<leader>ih` | n | toggle Rust inlay hints (on by default) |
+
+Global (any buffer):
+
+| Keys | Mode | Action |
+|---|---|---|
+| `:lsp restart [clangd]` | — | restart LSP clients (Neovim 0.12 built-in) |
+| `<leader>lr` | n | restart all LSP clients attached to this buffer |
+| `<leader>lc` | n | restart clangd only |
+| `<leader>cd` | n | prompt for `compile_commands.json` dir, update clangd + restart (`:NVFCompileDB <dir>`) |
+| `<leader>fi` | n | toggle live diagnostics while still in insert mode |
 
 Extras that work without keymaps:
 
@@ -47,8 +61,13 @@ Extras that work without keymaps:
 - **Rust**: type hints + enum-entry hints enabled; binding/chaining/parameter
   hints deliberately off. `RUST_SRC_PATH` is set, so `gd` jumps into
   `std::` sources.
-- **clangd**: picks up `compile_commands.json` by searching upward from the
-  file; also runs clang-tidy.
+- **clangd**: runs clang-tidy and reads project `.clangd` files
+  (`--enable-config`). It finds `compile_commands.json` by searching upward
+  from the source file (including a `build/` subdirectory). To point it at a
+  database elsewhere, either add a `.clangd` file with
+  `CompileFlags: CompilationDatabase: /path/to/build`, set
+  `NVF_CLANGD_COMPILE_COMMANDS_DIR=/path/to/build` before launching, or press
+  `<leader>cd` at runtime. All of these restart clangd where needed.
 - **BasedPyright**: runs on the bundled Node.js; `typeCheckingMode=standard`.
 - Servers attach per buffer; diagnostics use `E W I H` signs, virtual text
   (`●`) and underline.
@@ -177,12 +196,12 @@ Sources: LSP first, then snippets, then buffer words (min 3 chars).
 | Keys | Mode | Action |
 |---|---|---|
 | `<Esc><Esc>` | t | leave terminal mode (then normal window keys work) |
-| `q` | n | close `:help`, `:LspInfo`, quickfix, man pages |
+| `q` | n | close `:help`, `:checkhealth`, quickfix, man pages |
 | `:terminal` | — | open a terminal buffer |
 | `:checkhealth` | — | self diagnostics |
 | `:messages` | — | recent messages |
 | `:set ft=rust` | — | force filetype (re-triggers treesitter/LSP) |
-| `:LspInfo` | — | which server is attached to this buffer |
+| `:checkhealth vim.lsp` | — | which server is attached to this buffer |
 | `:help <topic>` | — | offline help (helptags shipped) |
 
 ## 8. Environment & state
@@ -201,7 +220,7 @@ Sources: LSP first, then snippets, then buffer words (min 3 chars).
 
 | Symptom | Fix |
 |---|---|
-| No LSP on a file | `:set ft=python` (or c/cpp/rust), then `:LspInfo` |
+| No LSP on a file | `:set ft=python` (or c/cpp/rust), then `:checkhealth vim.lsp` |
 | Weird display in tmux | see true-color note above |
 | Slow open on huge file | expected: >2 MiB triggers large-file mode |
 | Need logs | `~/.local/state/nvim-forge/lsp.log` |

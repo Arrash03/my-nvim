@@ -71,14 +71,22 @@ local function mapped(lhs)
   end
   return false
 end
+local wanted_maps = { 'gd', 'gr', 'K', '<leader>ca', '<leader>cf', '<leader>lf' }
+if expected == 'clangd' then
+  wanted_maps[#wanted_maps + 1] = '<leader>fn'
+end
 local maps_ok = vim.wait(5000, function()
-  return mapped('gd') and mapped('gr') and mapped('K')
+  for _, lhs in ipairs(wanted_maps) do
+    if not mapped(lhs) then return false end
+  end
+  return true
 end, 100)
 if not maps_ok then
-  print('NVF-LSP-FAIL buffer keymaps gd/gr/K not bound after attach')
+  print('NVF-LSP-FAIL buffer keymaps not bound after attach: '
+    .. table.concat(wanted_maps, ','))
   vim.cmd('cquit 1')
 end
-print('  keymaps gd/gr/K bound on attach')
+print('  keymaps ' .. table.concat(wanted_maps, ',') .. ' bound on attach')
 
 -- Clean shutdown so no server outlives nvim (keeps exit codes reliable).
 pcall(function()

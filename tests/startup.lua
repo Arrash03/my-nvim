@@ -101,6 +101,19 @@ for _, name in ipairs({ 'basedpyright', 'clangd', 'rust_analyzer' }) do
   end)
   check('lsp config registered: ' .. name, ok)
 end
+check(':lsp restart available (Neovim 0.12)', vim.fn.exists(':lsp') == 2)
+check(':NVFCompileDB command available', vim.fn.exists(':NVFCompileDB') == 2)
+do
+  local cmd = (vim.lsp.config.clangd and vim.lsp.config.clangd.cmd) or {}
+  local has_enable_config = false
+  for _, arg in ipairs(cmd) do
+    if arg == '--enable-config' then has_enable_config = true end
+  end
+  check('clangd honours project .clangd (--enable-config)', has_enable_config)
+end
+for _, key in ipairs({ '<leader>cd', '<leader>lr', '<leader>lc', '<leader>fi' }) do
+  check('mapping ' .. key .. ' defined', vim.fn.maparg(key, 'n') ~= '')
+end
 
 -- Bundled executables -----------------------------------------------------
 local exe = {
