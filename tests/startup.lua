@@ -118,7 +118,7 @@ for _, e in ipairs(exe) do
 end
 
 -- Tree-sitter parsers -----------------------------------------------------
-for _, lang in ipairs({ 'python', 'c', 'cpp', 'rust' }) do
+for _, lang in ipairs({ 'python', 'c', 'cpp', 'rust', 'markdown', 'markdown_inline' }) do
   local files = vim.api.nvim_get_runtime_file('parser/' .. lang .. '.so', true)
   check('parser ' .. lang .. '.so on runtimepath', #files > 0)
   if #files > 0 then

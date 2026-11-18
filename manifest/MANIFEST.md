@@ -27,12 +27,13 @@ against those checksums at fetch time in addition to the self-pinned digest.
 Pinned to the revisions declared by nvim-treesitter `main@29212d82`
 (`parsers.lua`), compiled with gcc inside the Ubuntu 22.04 sandbox:
 
-| Grammar            | Revision                                        |
-|--------------------|-------------------------------------------------|
-| tree-sitter-python | v0.25.0                                         |
-| tree-sitter-c      | b780e47fc780ddc8da13afa35a3f4ed5c157823d        |
-| tree-sitter-cpp    | c009222808634c1014f82438d4883753516a2c24        |
-| tree-sitter-rust   | 77a3747266f4d621d0757825e6b11edcbf991ca5        |
+| Grammar              | Revision                                        |
+|----------------------|-------------------------------------------------|
+| tree-sitter-python   | v0.25.0                                         |
+| tree-sitter-c        | b780e47fc780ddc8da13afa35a3f4ed5c157823d        |
+| tree-sitter-cpp      | c009222808634c1014f82438d4883753516a2c24        |
+| tree-sitter-rust     | 77a3747266f4d621d0757825e6b11edcbf991ca5        |
+| tree-sitter-markdown | a0a00f817d02412bd92c54d316f164d827b57b5c (builds `markdown` + `markdown_inline`) |
 
 ## Plugins (commit-pinned)
 

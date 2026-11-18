@@ -20,8 +20,8 @@ end
 local ft = vim.bo.filetype
 print('[nvf treesitter test] file=' .. vim.fn.expand('%:p') .. ' ft=' .. ft)
 
--- Parsers for all four shipped languages must be present and loadable.
-for _, lang in ipairs({ 'python', 'c', 'cpp', 'rust' }) do
+-- Parsers for all shipped languages must be present and loadable.
+for _, lang in ipairs({ 'python', 'c', 'cpp', 'rust', 'markdown', 'markdown_inline' }) do
   local files = vim.api.nvim_get_runtime_file('parser/' .. lang .. '.so', true)
   check('parser file for ' .. lang, #files > 0, 'not on runtimepath')
   if #files > 0 then

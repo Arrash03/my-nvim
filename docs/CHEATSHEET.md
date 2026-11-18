@@ -132,11 +132,21 @@ boxes, run with `NVF_ICONS=ascii nvim-forge` for plain `▸`/`▾` arrows (or
 
 Auto behaviour (no keys needed):
 
-- Tabs = 4 spaces for python/c/cpp/rust, 2 for lua; smart indent everywhere.
+- Tabs = 4 spaces for python/c/cpp/rust, 2 for lua; smart indent everywhere. Markdown uses 2-space indentation and prose-friendly defaults (see below).
 - Yanked text flashes (`IncSearch` highlight).
 - Cursor position restored when reopening a file.
 - Files > 2 MiB open in "large file mode": no syntax highlight, no treesitter,
   no undo/swap (you get a notification).
+
+### Reading Markdown
+
+Opening a `.md` file gives you a readable view out of the box:
+
+- **Syntax highlighting** via bundled `markdown` + `markdown_inline` Tree-sitter parsers (including inline code, links, emphasis, lists, headings, fenced blocks).
+- **Soft wrapping** (`wrap`, `linebreak`, `breakindent`) so prose flows to the window width instead of running off-screen.
+- **Concealed markup** (`conceallevel=2`, `concealcursor=""`) so `**bold**`, links, and similar markers render cleanly while you read.
+
+Toggle back to raw markup when needed: `:set conceallevel=0 nowrap`.
 
 ## 5. Snippets (via `<Tab>` in insert mode)
 

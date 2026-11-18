@@ -79,5 +79,11 @@
   },
   "plugin_nvim-web-devicons": {
     "sha256": "051e5145d51bc4b8faeb722dce17033f50714fc894b5fe0a7e2b8c9b59f4e802"
+  },
+  "ts_grammar_markdown": {
+    "sha256": "a712569a59f127fd44a1cb59eecdb05d63fa2ccb4622b7d822bff199bf6fb133"
+  },
+  "license_ts-markdown-LICENSE": {
+    "sha256": "52ec8a1bf8256511e2a92613e0bb41ffefba3897f16fa958d7bb28c466dd4804"
   }
 }

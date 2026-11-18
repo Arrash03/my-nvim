@@ -76,6 +76,13 @@
       "pinned_to": "nvim-treesitter main@29212d82 parsers.lua revision",
       "upstream_check": "self"
     },
+    "ts_grammar_markdown": {
+      "version": "a0a00f817d02412bd92c54d316f164d827b57b5c",
+      "url": "https://github.com/tree-sitter-grammars/tree-sitter-markdown/archive/a0a00f817d02412bd92c54d316f164d827b57b5c.tar.gz",
+      "sha256": null,
+      "pinned_to": "nvim-treesitter main@29212d82 parsers.lua revision (builds markdown + markdown_inline parsers)",
+      "upstream_check": "self"
+    },
     "plugin_nvim-treesitter": {
       "version": "29212d826054bb2948fa9d3a99eca9bf6a050eb2",
       "url": "https://github.com/nvim-treesitter/nvim-treesitter/archive/29212d826054bb2948fa9d3a99eca9bf6a050eb2.tar.gz",

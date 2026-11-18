@@ -23,7 +23,7 @@ A complete, self-contained, **offline** Neovim distribution for Ubuntu
 | `dist/TEST-REPORT.md` | — | offline acceptance results |
 
 SHA-256 of the .deb:
-`36f78a6bbbf082e4222b9009a8ed91db326649c7e03bc1d21a2643342218a089`
+`f0f31b240043b42e0c75f095b2b935a11cffcaf3f8474bb5957f2a18947b4160`
 
 Package metadata: `Depends: libc6 (>= 2.35), libgcc-s1, libstdc++6`,
 `Recommends: fontconfig`, `Architecture: amd64`. The only maintainer scripts
@@ -42,7 +42,7 @@ installation makes no network access and no other system changes.
 | clangd | 23.1.0 (C/C++) |
 | Rust toolchain | 1.99.1 (rustc, cargo, rust-std, rust-src) |
 | rust-analyzer | 1.99.1 (+ proc-macro server inside rustc) |
-| Tree-sitter parsers | python v0.25.0, c b780e47f, cpp c0092228, rust 77a37472 |
+| Tree-sitter parsers | python v0.25.0, c b780e47f, cpp c0092228, rust 77a37472, markdown/markdown_inline a0a00f81 |
 | Icons | Symbols Nerd Font 3.5.1 (Nerd Fonts) + fontconfig fallback rule |
 | Plugins | 13, commit-pinned (nvim-treesitter, nvim-lspconfig, nvim-cmp, cmp-nvim-lsp, cmp-buffer, LuaSnip, friendly-snippets, lualine.nvim, nvim-autopairs, telescope.nvim, plenary.nvim, nvim-tree.lua + nvim-web-devicons) |
 | Theme | custom "forge" (Kanagawa Dragon-derived, bg ≈ #0D0F12) |
@@ -87,9 +87,9 @@ Run in a pristine ubuntu-base-22.04.5 rootfs (see §8 for why proot):
 | T02 | clean `dpkg -i`; system `/usr/bin/nvim` untouched |
 | T03 | `nvim-forge --version` → NVIM v0.12.6 |
 | T04 | headless startup: theme, options, plugins, LSP config, exes |
-| T05 | Tree-sitter parses python/c/cpp/rust; highlighter attaches |
+| T05 | Tree-sitter parses python/c/cpp/rust/markdown; highlighter attaches |
 | T06–T09 | LSP attach: basedpyright, clangd (c), clangd (cpp), rust_analyzer |
-| T10 | ldd over all 41 installed ELF files — nothing unresolved |
+| T10 | ldd over all 43 installed ELF files — nothing unresolved |
 | T11 | runs as non-root uid 1000, XDG state created |
 | T12 | bundle read-only (write probe refused), editor still starts |
 | T13 | fully offline: startup + all 3 servers with sockets blocked; strace saw 0 AF_INET syscalls |
@@ -109,7 +109,7 @@ they come from the declared `Depends`.
   root, put its `bin` on the server's `cmd_env.PATH`) would fix it —
   then re-run `scripts/build-all.sh` (~10 min).
 - amd64 only; glibc ≥ 2.35 (Ubuntu 22.04+).
-- Tree-sitter parsers ship for python/c/cpp/rust only.
+- Tree-sitter parsers ship for python/c/cpp/rust/markdown only.
 - No new LSP servers/parsers at runtime by design (offline): rebuild needed.
 
 ## 8. Environment notes (useful if repeating this work)

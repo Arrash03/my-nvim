@@ -20,7 +20,7 @@ downloads, no Mason, no npm/rustup/git/compiler needed on the target machine.
 | clangd               | 23.1.0     | C/C++ LSP server                             |
 | Rust toolchain       | 1.99.1     | rustc, cargo, rust-std, rust-src             |
 | rust-analyzer        | 1.99.1     | Rust LSP server + proc-macro server          |
-| Tree-sitter parsers  | pinned     | python, c, cpp, rust (prebuilt `.so`)        |
+| Tree-sitter parsers  | pinned     | python, c, cpp, rust, markdown (prebuilt `.so`) |
 | Plugins              | commit-pin | see `manifest/pins.json`                     |
 | Icons (font)         | 3.5.1      | Symbols Nerd Font + fontconfig fallback rule |
 | Theme                | —          | Kanagawa Dragon-derived "forge" dark theme   |
@@ -178,7 +178,7 @@ a clean Ubuntu 24.04 runner:
 ## Known limitations
 
 * amd64 only; requires glibc >= 2.35 (Ubuntu 22.04+).
-* Tree-sitter parsers ship for python, c, cpp and rust only (pinned).
+* Tree-sitter parsers ship for python, c, cpp, rust and markdown (pinned).
 * No git, npm, cargo-registry or internet access at runtime by design —
   adding new LSP servers or parsers requires rebuilding the package.
 * rust-analyzer and clangd require a writable home for their caches; they

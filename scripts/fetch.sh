@@ -164,6 +164,7 @@ fetch_licenses() {
     "ts-c-LICENSE|https://raw.githubusercontent.com/tree-sitter/tree-sitter-c/$(jqv '.artifacts.ts_grammar_c.version')/LICENSE"
     "ts-cpp-LICENSE|https://raw.githubusercontent.com/tree-sitter/tree-sitter-cpp/$(jqv '.artifacts.ts_grammar_cpp.version')/LICENSE"
     "ts-rust-LICENSE|https://raw.githubusercontent.com/tree-sitter/tree-sitter-rust/$(jqv '.artifacts.ts_grammar_rust.version')/LICENSE"
+    "ts-markdown-LICENSE|https://raw.githubusercontent.com/tree-sitter-grammars/tree-sitter-markdown/$(jqv '.artifacts.ts_grammar_markdown.version')/LICENSE"
   )
   local item name url dest sha pinned
   for item in "${items[@]}"; do
@@ -185,7 +186,7 @@ fetch_licenses() {
 }
 
 # ------------------------------------------------------- generic artifacts
-for name in ubuntu_base nvim clangd ts_grammar_python ts_grammar_c ts_grammar_cpp ts_grammar_rust \
+for name in ubuntu_base nvim clangd ts_grammar_python ts_grammar_c ts_grammar_cpp ts_grammar_rust ts_grammar_markdown \
             plugin_nvim-treesitter plugin_nvim-lspconfig plugin_nvim-cmp plugin_cmp-nvim-lsp \
             plugin_cmp-buffer plugin_LuaSnip plugin_friendly-snippets plugin_lualine.nvim \
             plugin_nvim-autopairs plugin_telescope.nvim plugin_plenary.nvim \

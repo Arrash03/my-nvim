@@ -1,7 +1,8 @@
 --[[
   Tree-sitter wiring.
 
-  Parsers for python, c, cpp and rust are pre-built and shipped in
+  Parsers for python, c, cpp, rust and markdown (incl. markdown_inline) are
+  pre-built and shipped in
   $NVF_HOME/parsers/parser/*.so; queries ship inside the vendored
   nvim-treesitter plugin (runtime/queries).  Nothing here downloads or
   compiles anything: :TSInstall is never invoked and auto-install is not
@@ -17,7 +18,7 @@ require('nvim-treesitter').setup({
 })
 
 -- Languages for which we ship compiled parsers.
-local TS_LANGUAGES = { 'python', 'c', 'cpp', 'rust' }
+local TS_LANGUAGES = { 'python', 'c', 'cpp', 'rust', 'markdown' }
 
 -- Enable treesitter highlight + indent for the supported filetypes only.
 vim.api.nvim_create_autocmd('FileType', {
@@ -34,8 +35,16 @@ vim.api.nvim_create_autocmd('FileType', {
     if not ok then
       return
     end
+    -- Markdown uses inline injections (links, emphasis, code spans); make the
+    -- companion parser available when present.
+    if ev.match == 'markdown' then
+      pcall(vim.treesitter.language.add, 'markdown_inline')
+    end
     pcall(vim.treesitter.start, buf, ev.match)
-    vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+    -- Use treesitter indentation only where we know it's solid.
+    if ev.match ~= 'markdown' then
+      vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+    end
   end,
 })
 

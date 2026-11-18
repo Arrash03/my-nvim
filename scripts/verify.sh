@@ -117,10 +117,15 @@ fi
 
 # ---------------------------------------------------- T05 tree-sitter
 sroot /bin/bash -c 'set -e; mkdir -p '"$WORK"'; cp /nvf-build/tests/samples/* '"$WORK"'/'
+ts_ok=1
 sroot /usr/bin/nvim-forge --headless --cmd 'set nomore' \
   "$WORK/test.py" -c 'luafile /nvf-build/tests/treesitter.lua'
-if have NVF-TREESITTER-OK; then
-  row PASS T05 "Tree-sitter parses python/c/cpp/rust; highlighter attaches"
+have NVF-TREESITTER-OK || ts_ok=0
+sroot /usr/bin/nvim-forge --headless --cmd 'set nomore' \
+  "$WORK/test.md" -c 'luafile /nvf-build/tests/treesitter.lua'
+have NVF-TREESITTER-OK || ts_ok=0
+if [[ $ts_ok -eq 1 ]]; then
+  row PASS T05 "Tree-sitter parses python/c/cpp/rust/markdown; highlighter attaches"
 else
   row FAIL T05 "Tree-sitter" "rc=$RC ${OUT//$'\n'/ }"
 fi
@@ -326,7 +331,7 @@ ROOTFS_VER=$(cat "$T/etc/os-release" | sed -n 's/^VERSION_ID=//p' | tr -d '"')
   echo "## Limitations"
   echo
   echo "- amd64 only; requires glibc >= 2.35 (Ubuntu 22.04+)."
-  echo "- Tree-sitter parsers ship for python, c, cpp and rust only."
+  echo "- Tree-sitter parsers ship for python, c, cpp, rust and markdown only."
   echo "- Validation ran inside a proot-based Ubuntu 22.04 rootfs rather than"
   echo "  Docker/Podman (unavailable on the build host; AppArmor blocks"
   echo "  unprivileged user namespaces), so kernel-level container isolation"

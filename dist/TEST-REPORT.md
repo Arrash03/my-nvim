@@ -1,7 +1,7 @@
 # nvim-forge offline test report
 
-- Package: `nvim-forge_1.0.0_amd64.deb` (290M, installed 1208084 KiB)
-- Built: 2026-11-17 15:04:43 UTC
+- Package: `nvim-forge_1.0.0_amd64.deb` (289M, installed 1208796 KiB)
+- Built: 2026-11-18 10:54:18 UTC
 - Target: Ubuntu 22.04 (amd64), glibc baseline 2.35 (Ubuntu 22.04)
 - Environment: proot 5.4.0 sandbox on a pristine ubuntu-base-22.04.5
   rootfs (used instead of Docker/Podman: neither is available on the
@@ -10,16 +10,16 @@
 
 | ID | Check | Result |
 |----|-------|--------|
-| T01 | SHA256SUMS verified; metadata ok (sha256=36f78a6bbbf082e4…) | PASS |
+| T01 | SHA256SUMS verified; metadata ok (sha256=f0f31b240043b42e…) | PASS |
 | T02 | clean dpkg -i install; system /usr/bin/nvim untouched | PASS |
 | T03 | nvim-forge --version -> NVIM v0.12.6 | PASS |
 | T04 | headless startup: theme, options, plugins, LSP config, exes | PASS |
-| T05 | Tree-sitter parses python/c/cpp/rust; highlighter attaches | PASS |
+| T05 | Tree-sitter parses python/c/cpp/rust/markdown; highlighter attaches | PASS |
 | T06 | LSP attach: basedpyright (test.py) | PASS |
 | T07 | LSP attach: clangd (test.c) | PASS |
 | T08 | LSP attach: clangd (test.cpp) | PASS |
 | T09 | LSP attach: rust_analyzer (test.rs) | PASS |
-| T10 | ldd over installed bundle: ELF-scanned=41, all resolve | PASS |
+| T10 | ldd over installed bundle: ELF-scanned=43, all resolve | PASS |
 | T11 | non-root (uid 1000) startup OK; 2 XDG state dir(s) created | PASS |
 | T12 | bundle read-only (write probe refused) and editor still starts | PASS |
 | T13 | offline: startup + 3 LSP servers with sockets blocked; strace saw 0 AF_INET* syscalls in 9 net syscalls | PASS |
@@ -27,7 +27,7 @@
 | T15 | icons: Symbols Nerd Font (2 faces) + fontconfig fallback; explorer uses nerd glyphs | PASS |
 | T16 | dpkg -r removes bundle + launcher; system nvim and user state kept | PASS |
 
-- Package SHA-256: `36f78a6bbbf082e4222b9009a8ed91db326649c7e03bc1d21a2643342218a089`
+- Package SHA-256: `f0f31b240043b42e0c75f095b2b935a11cffcaf3f8474bb5957f2a18947b4160`
 
 ## Versions under test
 
@@ -44,7 +44,7 @@
 ## Limitations
 
 - amd64 only; requires glibc >= 2.35 (Ubuntu 22.04+).
-- Tree-sitter parsers ship for python, c, cpp and rust only.
+- Tree-sitter parsers ship for python, c, cpp, rust and markdown only.
 - Validation ran inside a proot-based Ubuntu 22.04 rootfs rather than
   Docker/Podman (unavailable on the build host; AppArmor blocks
   unprivileged user namespaces), so kernel-level container isolation

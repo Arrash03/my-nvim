@@ -32,6 +32,24 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+-- Markdown: readable defaults (prose, not code).
+vim.api.nvim_create_autocmd('FileType', {
+  group = augroup('markdown'),
+  pattern = { 'markdown', 'markdown.mdx' },
+  callback = function(ev)
+    vim.bo[ev.buf].shiftwidth = 2
+    vim.bo[ev.buf].tabstop = 2
+    vim.bo[ev.buf].softtabstop = 2
+    vim.bo[ev.buf].expandtab = true
+    -- Window-local reading ergonomics.
+    vim.opt_local.wrap = true
+    vim.opt_local.linebreak = true
+    vim.opt_local.breakindent = true
+    vim.opt_local.conceallevel = 2
+    vim.opt_local.concealcursor = ''
+  end,
+})
+
 -- Highlight yanked text -----------------------------------------------------
 vim.api.nvim_create_autocmd('TextYankPost', {
   group = augroup('yank'),
