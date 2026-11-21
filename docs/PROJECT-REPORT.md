@@ -82,6 +82,14 @@ quickfix list, and `[g`/`]g` jump between changed lines. The explorer also
 highlights changed files. Without git these commands are safe no-ops, so the
 "no git required on target" guarantee is preserved.
 
+Completion is nvim-cmp with LSP, LuaSnip/friendly-snippets and current-buffer
+sources, plus a secondary buffer source for short words. Suggestions are shown
+in a bordered menu with kind/source labels; `<C-Space>` opens it explicitly,
+`<Tab>`/`<S-Tab>` navigate, and `<CR>` accepts the first item even with
+`completeopt=noselect`. `cmp_nvim_lsp` registers snippet-capable completion
+capabilities with every server. Acceptance T18 drives the real buffer source
+and asserts that a partial word returns the full identifier.
+
 C/C++ compile database and fixes can be handled entirely from the editor:
 `compile_commands.json` in the project root (or `build/`) is found
 automatically; a project `.clangd` file with
@@ -106,9 +114,9 @@ Individual steps: `fetch.sh` (download+verify pins) → `sandbox.sh`
 (prepare Ubuntu 22.04 proot rootfses) → `build-parsers.sh` (compile
 grammars inside the 22.04 sandbox) → `stage.sh` (assemble /opt tree) →
 `check-elf.sh` (ldd + glibc ceilings) → `build-deb.sh` → `verify.sh`
-(18-check offline acceptance suite, writes `dist/TEST-REPORT.md`).
+(19-check offline acceptance suite, writes `dist/TEST-REPORT.md`).
 
-## 6. Test results — 18/18 PASS
+## 6. Test results — 19/19 PASS
 
 Run in a pristine ubuntu-base-22.04.5 rootfs (see §8 for why proot):
 
@@ -128,7 +136,8 @@ Run in a pristine ubuntu-base-22.04.5 rootfs (see §8 for why proot):
 | T15 | icons: Symbols Nerd Font + fontconfig fallback installed; explorer uses nerd glyphs |
 | T16 | batch-open many files from explorer in tabs (mark+`<leader>tm`, visual+`<C-t>`) |
 | T17 | Git Lens: blame text, change signs, changed-file quickfix, `[g`/`]g` (fake-git stub) |
-| T18 | `dpkg -r` removes bundle+launcher; system nvim and user state kept |
+| T18 | completion: LSP/snippet/buffer sources, mappings, live buffer suggestion |
+| T19 | `dpkg -r` removes bundle+launcher; system nvim and user state kept |
 
 ELF audit ceilings: max `GLIBC_2.34`, max `GLIBCXX_3.4.21` — inside the
 Ubuntu 22.04 baseline (2.35 / 3.4.30). glibc/libstdc++ are never bundled;

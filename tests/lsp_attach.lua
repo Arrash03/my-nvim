@@ -56,10 +56,26 @@ local caps = attached.server_capabilities or {}
 print(string.format('NVF-LSP-OK client=%s pid=%d root=%s',
   attached.name, attached.id,
   tostring(attached.root_dir or attached.config.root_dir or 'nil')))
-print('  completionProvider=' ..
+print('  textDocumentSync=' ..
   tostring(caps.textDocumentSync ~= nil))
+if caps.completionProvider == nil then
+  print('NVF-LSP-FAIL ' .. attached.name .. ' does not advertise completions')
+  vim.cmd('cquit 1')
+end
+print('  completionProvider=' .. tostring(caps.completionProvider ~= nil))
 print('  definitionProvider=' ..
   tostring(caps.definitionProvider ~= nil))
+
+-- cmp_nvim_lsp must register client-side completion capabilities, including
+-- snippet support, for every server via vim.lsp.config('*', ...).
+local cc = attached.capabilities and attached.capabilities.textDocument
+  and attached.capabilities.textDocument.completion
+  and attached.capabilities.textDocument.completion.completionItem
+if not cc or cc.snippetSupport ~= true then
+  print('NVF-LSP-FAIL ' .. attached.name .. ' missing client completion capabilities')
+  vim.cmd('cquit 1')
+end
+print('  clientCompletionSnippets=true')
 
 -- Buffer-local keymaps from the LspAttach autocmd must be present (the
 -- autocmd may run a tick after the client shows up, so wait briefly).

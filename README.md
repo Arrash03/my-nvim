@@ -136,6 +136,24 @@ you have two or more tabs.
 - Each tab keeps its own splits and explorer visibility. Files are buffers —
   the same file can be visible in several tabs; edits stay in sync.
 
+### Autocomplete and suggestions
+
+Completion starts automatically while you type, using (in order) **language
+server suggestions**, **snippets**, and **words from the current buffer**.
+Suggestions appear in a bordered menu with a kind label (`fn`, `var`, `cls`, …)
+and a source label (`LSP`, `Snip`, `Buf`).
+
+- `<C-Space>` — open the suggestion menu explicitly
+- `<Tab>` / `<S-Tab>` — next / previous suggestion, or expand/jump snippets
+- `<CR>` — accept the first suggestion; if the menu is closed, insert a newline
+- `<C-e>` — dismiss the menu; `<C-d>` / `<C-f>` — scroll the documentation
+- `<C-y>` — confirm the highlighted entry (nvim-cmp default)
+
+LSP-backed completion is registered for Python, C, C++, and Rust with snippet
+support, so server suggestions (including function signatures and snippets)
+appear alongside your own buffer words. Search `/` and `?` also complete from
+the current buffer. No network or plugin download is involved.
+
 ### Git Lens and blame (optional)
 
 Git is **not bundled** — the editor remains fully offline and works without

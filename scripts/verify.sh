@@ -22,7 +22,8 @@
 #   T15  icon support: Symbols Nerd Font + fontconfig fallback rule
 #   T16  batch-open many files from the explorer, one tab each (marks + visual)
 #   T17  Git Lens: inline blame + uncommitted files (offline fake-git stub)
-#   T18  clean removal via dpkg -r (system Neovim + user state kept)
+#   T18  completion: LSP/buffer/snippet sources, mappings, real buffer suggestion
+#   T19  clean removal via dpkg -r (system Neovim + user state kept)
 #
 # Writes dist/TEST-REPORT.md.  Exit code = number of failed checks.
 # ---------------------------------------------------------------------------
@@ -311,7 +312,17 @@ else
   row FAIL T17 "Git Lens / blame" "rc=$RC ${OUT//$'\n'/ }"
 fi
 
-# ------------------------------------------------------ T18 clean removal
+# ------------------------------------------------ T18 completion / suggestions
+sroot /bin/bash -c 'printf "placeholder\n" > '"$WORK"'/completion.txt'
+sroot /usr/bin/nvim-forge --headless --cmd 'set nomore' \
+  "$WORK/completion.txt" -c 'luafile /nvf-build/tests/completion.lua'
+if [[ $RC -eq 0 ]] && have NVF-COMPLETION-OK && ! have NVF-COMPLETION-FAIL; then
+  row PASS T18 "completion: LSP+snippet+buffer sources, mappings, live buffer suggestion"
+else
+  row FAIL T18 "completion / suggestions" "rc=$RC ${OUT//$'\n'/ }"
+fi
+
+# ------------------------------------------------------ T19 clean removal
 sroot /bin/bash -c 'dpkg -r nvim-forge </dev/null'
 rm_rc=$RC; rm_out=$OUT
 sroot /bin/bash -c '
@@ -322,9 +333,9 @@ sroot /bin/bash -c '
   [ -d /home/tester/.local/state/nvim-forge ] && echo user-state-kept'
 if [[ $rm_rc -eq 0 ]] && have opt-gone && have launcher-gone \
    && have "$SYS_MD5" && have user-state-kept; then
-  row PASS T18 "dpkg -r removes bundle + launcher; system nvim and user state kept"
+  row PASS T19 "dpkg -r removes bundle + launcher; system nvim and user state kept"
 else
-  row FAIL T18 "clean removal" "rc=$rm_rc ${OUT//$'\n'/ }"
+  row FAIL T19 "clean removal" "rc=$rm_rc ${OUT//$'\n'/ }"
 fi
 
 # --------------------------------------------------------------- report

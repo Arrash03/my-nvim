@@ -6,8 +6,9 @@
     * snippet active -> expand / jump forward / backward
     * otherwise     -> falls through to the default behaviour, so plain
                        Tab-indentation stays reliable.
-  CR confirms the selected item (or inserts a newline when the menu is
-  closed).  <C-e> always aborts.
+  CR accepts the first suggestion when the menu is open (even with
+  completeopt=noselect), otherwise it inserts a newline.  <C-Space> explicitly
+  opens the menu, <C-e> aborts, <C-d>/<C-f> scroll the documentation.
 ]]
 
 local cmp = require('cmp')
@@ -29,7 +30,28 @@ cmp.setup({
       winhighlight = 'Normal:NormalFloat,FloatBorder:FloatBorder,Search:None',
     }),
   },
+  -- Make every suggestion self-describing: kind + originating source.
+  formatting = {
+    fields = { 'abbr', 'kind', 'menu' },
+    format = function(entry, item)
+      local kinds = {
+        Text = 'txt', Method = 'fn', Function = 'fn', Constructor = 'fn',
+        Field = 'fld', Variable = 'var', Class = 'cls', Interface = 'ifc',
+        Module = 'mod', Property = 'prop', Enum = 'enum', Keyword = 'kw',
+        Snippet = 'snip', File = 'file', Reference = 'ref', Constant = 'const',
+      }
+      item.kind = kinds[item.kind] or item.kind or ''
+      item.menu = ({
+        nvim_lsp = 'LSP',
+        luasnip = 'Snip',
+        buffer = 'Buf',
+      })[entry.source.name] or entry.source.name
+      return item
+    end,
+  },
+  completion = { autocompletion = true },
   mapping = cmp.mapping.preset.insert({
+    ['<C-Space>'] = cmp.mapping.complete(),
     ['<Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
@@ -49,8 +71,11 @@ cmp.setup({
       end
     end, { 'i', 's' }),
     ['<CR>'] = cmp.mapping(function(fallback)
-      if cmp.visible() and cmp.get_active_entry() then
-        cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+      if cmp.visible() then
+        -- `noselect` keeps the cursor put, but Enter should still be a useful
+        -- "accept the suggestion" key.  select=true makes the first item the
+        -- target when nothing has been explicitly selected yet.
+        cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true })
       else
         fallback()
       end
@@ -64,10 +89,10 @@ cmp.setup({
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
   }, {
-    { name = 'buffer', keyword_length = 3 },
+    { name = 'buffer', keyword_length = 2 },
   }),
   performance = {
-    fetching_timeout = 200,
+    fetching_timeout = 500,
   },
 })
 

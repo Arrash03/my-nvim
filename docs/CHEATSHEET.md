@@ -218,12 +218,16 @@ exit with `<CR>`. Sources: friendly-snippets (bundled) + nvim-forge extras:
 
 | Keys | Action |
 |---|---|
+| *(automatic)* | menu opens as you type |
+| `<C-Space>` | open the suggestion menu explicitly |
 | `<Tab>` / `<S-Tab>` | next / previous item; or snippet jump; or plain tab |
-| `<CR>` | confirm selection (newline when menu closed) |
+| `<CR>` | accept the first suggestion (newline when menu closed) |
+| `<C-y>` | confirm the highlighted entry |
 | `<C-e>` | abort / close menu |
 | `<C-d>` / `<C-f>` | scroll docs window down / up |
 
-Sources: LSP first, then snippets, then buffer words (min 3 chars).
+Sources: LSP first, then snippets, then buffer words (min 2 chars). Each entry
+shows a kind (`fn`, `var`, `cls`, …) and source (`LSP`, `Snip`, `Buf`).
 `/` and `?` searches also get buffer-word completion.
 
 ## 7. Terminal + misc
