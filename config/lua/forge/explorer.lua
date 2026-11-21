@@ -23,6 +23,9 @@ end
 -- fallback rule; where that is missing (e.g. a source checkout on a machine
 -- without Nerd Fonts) fall back to plain arrows so the tree stays readable.
 -- Override with NVF_ICONS=nerd or NVF_ICONS=ascii.
+-- Git markers in the tree are only meaningful when git actually exists.
+local git_available = vim.fn.executable('git') == 1
+
 local icon_mode = vim.env.NVF_ICONS
 if not icon_mode or icon_mode == '' then
   icon_mode = vim.fn.glob('/usr/share/fonts/truetype/nvim-forge/*.ttf') ~= ''
@@ -55,15 +58,15 @@ nt.setup({
 
   renderer = {
     group_empty = true,
-    highlight_git = false,
+    highlight_git = git_available,
     full_name = false,
     highlight_opened_files = 'all',
     indent_markers = { enable = true },
     icons = use_nerd_icons and {
-      show = { file = true, folder = true, folder_arrow = true, git = false },
+      show = { file = true, folder = true, folder_arrow = true, git = git_available },
     } or {
       -- No Nerd Font: show plain arrows instead of empty boxes.
-      show = { file = false, folder = false, folder_arrow = true, git = false },
+      show = { file = false, folder = false, folder_arrow = true, git = git_available },
       glyphs = { folder = { arrow_closed = '▸', arrow_open = '▾' } },
     },
   },
@@ -76,7 +79,7 @@ nt.setup({
   -- The target machine is offline and may have no `git` binary at all;
   -- only enable the git status column when git actually exists.
   git = {
-    enable = vim.fn.executable('git') == 1,
+    enable = git_available,
     ignore = true,
     show_on_dirs = false,
   },

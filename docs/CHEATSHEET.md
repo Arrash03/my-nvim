@@ -106,6 +106,19 @@ Tabs (open many files, then switch):
 The tab bar appears when there are 2+ tabs; you can also click a tab. Each
 tab has its own splits; buffers are shared, so edits stay in sync.
 
+Git Lens / blame (optional: needs `git` on PATH; no-op without it):
+
+| Keys | Mode | Action |
+|---|---|---|
+| `<leader>gc` / `:NVFGitChanges` | n / — | list all changed/untracked files in quickfix |
+| `<leader>gb` / `:NVFGitBlame` | n / — | toggle inline blame on current buffer |
+| `<leader>gR` / `:NVFGitRefresh` | n / — | refresh change signs + blame |
+| `[g` / `]g` | n | previous / next changed line in current file |
+| `+` / `-` signcolumn marks | — | added / deleted lines (staged + unstaged) |
+
+The explorer also highlights modified files when git is available. Git is not
+bundled; the editor stays fully offline and works without it.
+
 | Keys | Mode | Action |
 |---|---|---|
 | `[q` / `]q` | n | previous / next quickfix entry |

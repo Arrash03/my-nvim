@@ -100,6 +100,12 @@ hi('DiffChange', { bg = c.diff_change })
 hi('DiffDelete', { bg = c.diff_delete })
 hi('DiffText',   { bg = c.diff_change, fg = c.blue })
 
+-- Git Lens (signcolumn marks + inline blame) -------------------------------
+hi('ForgeGitAdd',    { fg = c.green,  bg = c.diff_add })
+hi('ForgeGitChange', { fg = c.blue,   bg = c.diff_change })
+hi('ForgeGitDelete', { fg = c.red,    bg = c.diff_delete })
+hi('ForgeGitBlame',  { fg = c.fg2 })
+
 -- Folds --------------------------------------------------------------------
 hi('Folded',     { fg = c.fg2, bg = c.bg1 })
 hi('FoldColumn', { fg = c.fg3, bg = c.bg0 })

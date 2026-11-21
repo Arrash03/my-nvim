@@ -21,7 +21,8 @@
 #   T14  no hardcoded home paths in config/launcher
 #   T15  icon support: Symbols Nerd Font + fontconfig fallback rule
 #   T16  batch-open many files from the explorer, one tab each (marks + visual)
-#   T17  clean removal via dpkg -r (system Neovim + user state kept)
+#   T17  Git Lens: inline blame + uncommitted files (offline fake-git stub)
+#   T18  clean removal via dpkg -r (system Neovim + user state kept)
 #
 # Writes dist/TEST-REPORT.md.  Exit code = number of failed checks.
 # ---------------------------------------------------------------------------
@@ -296,7 +297,21 @@ else
   row FAIL T16 "batch tabs from explorer" "${OUT//$'\n'/ }"
 fi
 
-# ------------------------------------------------------ T16 clean removal
+# ---------------------------------- T17 Git Lens / blame (fake git on PATH)
+sroot /bin/bash -c '
+  mkdir -p '"$WORK"'/gitrepo/src
+  printf "int a;\nint B;\nint c;\nint d;\n" > '"$WORK"'/gitrepo/src/main.c
+  : > '"$WORK"'/gitrepo/src/extra.c'
+sroot /usr/bin/env PATH="/nvf-build/tests/fake-git:/usr/bin:/bin" \
+  /usr/bin/nvim-forge --headless --cmd 'set nomore' \
+  "$WORK/gitrepo/src/main.c" -c 'luafile /nvf-build/tests/git_lens.lua'
+if [[ $RC -eq 0 ]] && have NVF-GIT-OK && ! have NVF-GIT-FAIL; then
+  row PASS T17 "Git Lens: inline blame, change signs, changed-file list, line jumps"
+else
+  row FAIL T17 "Git Lens / blame" "rc=$RC ${OUT//$'\n'/ }"
+fi
+
+# ------------------------------------------------------ T18 clean removal
 sroot /bin/bash -c 'dpkg -r nvim-forge </dev/null'
 rm_rc=$RC; rm_out=$OUT
 sroot /bin/bash -c '
@@ -307,9 +322,9 @@ sroot /bin/bash -c '
   [ -d /home/tester/.local/state/nvim-forge ] && echo user-state-kept'
 if [[ $rm_rc -eq 0 ]] && have opt-gone && have launcher-gone \
    && have "$SYS_MD5" && have user-state-kept; then
-  row PASS T17 "dpkg -r removes bundle + launcher; system nvim and user state kept"
+  row PASS T18 "dpkg -r removes bundle + launcher; system nvim and user state kept"
 else
-  row FAIL T17 "clean removal" "rc=$rm_rc ${OUT//$'\n'/ }"
+  row FAIL T18 "clean removal" "rc=$rm_rc ${OUT//$'\n'/ }"
 fi
 
 # --------------------------------------------------------------- report

@@ -82,6 +82,10 @@ particular home directory, and no root privileges are required to run it.
 | `<leader>d`     | show diagnostic details as a float           |
 | `<leader>ff`    | find files (Telescope)                       |
 | `<leader>fg`    | live grep                                    |
+| `<leader>gc`    | Git: list changed/untracked files            |
+| `<leader>gb`    | Git: toggle inline blame                     |
+| `<leader>gR`    | Git: refresh change marks and blame          |
+| `[g` / `]g`     | prev / next changed line in current buffer   |
 
 ### File explorer
 
@@ -131,6 +135,26 @@ you have two or more tabs.
   `:tabclose 2` (close tab 2). `:tabmove 3` reorders the current tab.
 - Each tab keeps its own splits and explorer visibility. Files are buffers —
   the same file can be visible in several tabs; edits stay in sync.
+
+### Git Lens and blame (optional)
+
+Git is **not bundled** — the editor remains fully offline and works without
+it. When `git` is on `PATH`, nvim-forge adds VS Code–style Git Lens helpers:
+
+- `+` / `-` signs in the signcolumn for added and deleted lines in the current
+  file, covering both staged and unstaged changes. Modified lines show both a
+  `-` on the old line and a `+` on the new one. Marks refresh when you enter a
+  file and after `:w`.
+- Inline blame: `<leader>gb` (or `:NVFGitBlame`) toggles compact
+  `author · date · commit summary` text at the end of every line.
+- Changed files: `<leader>gc` (or `:NVFGitChanges`) opens a quickfix list of
+  every modified, staged, added, deleted, renamed and untracked file in the
+  repository. The explorer also highlights changed files when git is present.
+- `[g` / `]g` jump between changed lines in the current file.
+- `:NVFGitRefresh` rebuilds the marks (also bound to `<leader>gR`).
+
+Without `git`, all of these are safe no-ops with a warning, and the rest of
+nvim-forge is unaffected.
 
 ### Language servers
 

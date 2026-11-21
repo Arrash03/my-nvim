@@ -63,6 +63,18 @@ for _, m in ipairs(mods) do
   check('require("' .. m[1] .. '") from ' .. m[2], ok, err)
 end
 
+-- Git Lens loads cleanly even when git is not installed -------------------
+do
+  local ok, err = pcall(require, 'forge.git')
+  check('require("forge.git")', ok, err)
+  for _, cmd in ipairs({ 'NVFGitChanges', 'NVFGitBlame', 'NVFGitRefresh' }) do
+    check('command :' .. cmd, vim.fn.exists(':' .. cmd) == 2)
+  end
+  for _, key in ipairs({ '<leader>gc', '<leader>gb', '<leader>gR', '[g', ']g' }) do
+    check('mapping ' .. key, vim.fn.maparg(key, 'n') ~= '')
+  end
+end
+
 -- File explorer (nvim-tree) ----------------------------------------------
 do
   local nt_ok, nt_api = pcall(require, 'nvim-tree.api')

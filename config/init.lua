@@ -55,6 +55,7 @@ require('forge.autocmds')
 require('forge.treesitter')   -- bundled parsers + highlight/indent wiring
 require('forge.statusline')   -- lualine with the forge theme
 require('forge.picker')       -- telescope (+ rg-free grep fallback)
+require('forge.git')          -- optional Git Lens: blame + uncommitted changes
 require('forge.explorer')     -- nvim-tree sidebar file explorer (<leader>e)
 require('forge.snippets')     -- LuaSnip + friendly-snippets + own snippets
 require('forge.cmp')          -- nvim-cmp completion

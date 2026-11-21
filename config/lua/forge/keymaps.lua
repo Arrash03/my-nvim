@@ -59,5 +59,17 @@ map('n', '<leader>dl', vim.diagnostic.setloclist,
 map('n', '[q', '<cmd>cprevious<CR>zz', { desc = 'Previous quickfix entry' })
 map('n', ']q', '<cmd>cnext<CR>zz', { desc = 'Next quickfix entry' })
 
+-- Git Lens (no-op when git is not installed) --------------------------------
+map('n', '<leader>gc', '<cmd>NVFGitChanges<CR>',
+  { desc = 'Git: changed/untracked files (quickfix)' })
+map('n', '<leader>gb', '<cmd>NVFGitBlame<CR>',
+  { desc = 'Git: toggle inline blame' })
+map('n', '<leader>gR', '<cmd>NVFGitRefresh<CR>',
+  { desc = 'Git: refresh change marks and blame' })
+map('n', '[g', function() require('forge.git').jump_changed(-1) end,
+  { desc = 'Previous changed line' })
+map('n', ']g', function() require('forge.git').jump_changed(1) end,
+  { desc = 'Next changed line' })
+
 -- Terminal -----------------------------------------------------------------
 map('t', '<Esc><Esc>', [[<C-\><C-n>]], { desc = 'Terminal normal mode' })

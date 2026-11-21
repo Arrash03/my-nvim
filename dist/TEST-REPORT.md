@@ -1,16 +1,16 @@
 # nvim-forge offline test report
 
-- Package: `nvim-forge_1.0.0_amd64.deb` (289M, installed 1208808 KiB)
-- Built: 2026-11-21 15:31:17 UTC
+- Package: `nvim-forge_1.0.0_amd64.deb` (289M, installed 1208800 KiB)
+- Built: 2026-11-21 17:05:19 UTC
 - Target: Ubuntu 22.04 (amd64), glibc baseline 2.35 (Ubuntu 22.04)
 - Environment: proot 5.4.0 sandbox on a pristine ubuntu-base-22.04.5
   rootfs (used instead of Docker/Podman: neither is available on the
   build host and unprivileged user namespaces are blocked by AppArmor).
-- Result: **17 passed, 0 failed**
+- Result: **18 passed, 0 failed**
 
 | ID | Check | Result |
 |----|-------|--------|
-| T01 | SHA256SUMS verified; metadata ok (sha256=1fc55db8876b1844…) | PASS |
+| T01 | SHA256SUMS verified; metadata ok (sha256=3c8ab25e7e7337a8…) | PASS |
 | T02 | clean dpkg -i install; system /usr/bin/nvim untouched | PASS |
 | T03 | nvim-forge --version -> NVIM v0.12.6 | PASS |
 | T04 | headless startup: theme, options, plugins, LSP config, exes | PASS |
@@ -26,9 +26,10 @@
 | T14 | no hardcoded /home paths in config or launcher | PASS |
 | T15 | icons: Symbols Nerd Font (2 faces) + fontconfig fallback; explorer uses nerd glyphs | PASS |
 | T16 | batch tabs from explorer: mark+<leader>tm and visual+<C-t> | PASS |
-| T17 | dpkg -r removes bundle + launcher; system nvim and user state kept | PASS |
+| T17 | Git Lens: inline blame, change signs, changed-file list, line jumps | PASS |
+| T18 | dpkg -r removes bundle + launcher; system nvim and user state kept | PASS |
 
-- Package SHA-256: `1fc55db8876b1844cd686ca1a3a6def8ab67dffcb2ab6a7187baebdfeb68448a`
+- Package SHA-256: `3c8ab25e7e7337a8247be572366c65905b8f83776d6f5a38b01105a7206bcc44`
 
 ## Versions under test
 

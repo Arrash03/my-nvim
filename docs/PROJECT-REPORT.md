@@ -74,6 +74,14 @@ between them. `gt` is reserved for tabs even in LSP buffers — type definition
 was moved to `<leader>gt`. `<leader>tc`/`<leader>to` close tabs, and
 `<leader>tf`/`<leader>tl` jump to first/last.
 
+Optional Git Lens works without bundling git: when a `git` executable is on
+`PATH`, added/deleted lines get signcolumn marks (staged + unstaged),
+`:NVFGitBlame` (`<leader>gb`) overlays compact author/date/summary blame text,
+`:NVFGitChanges` (`<leader>gc`) lists every changed/untracked file in the
+quickfix list, and `[g`/`]g` jump between changed lines. The explorer also
+highlights changed files. Without git these commands are safe no-ops, so the
+"no git required on target" guarantee is preserved.
+
 C/C++ compile database and fixes can be handled entirely from the editor:
 `compile_commands.json` in the project root (or `build/`) is found
 automatically; a project `.clangd` file with
@@ -98,9 +106,9 @@ Individual steps: `fetch.sh` (download+verify pins) → `sandbox.sh`
 (prepare Ubuntu 22.04 proot rootfses) → `build-parsers.sh` (compile
 grammars inside the 22.04 sandbox) → `stage.sh` (assemble /opt tree) →
 `check-elf.sh` (ldd + glibc ceilings) → `build-deb.sh` → `verify.sh`
-(17-check offline acceptance suite, writes `dist/TEST-REPORT.md`).
+(18-check offline acceptance suite, writes `dist/TEST-REPORT.md`).
 
-## 6. Test results — 17/17 PASS
+## 6. Test results — 18/18 PASS
 
 Run in a pristine ubuntu-base-22.04.5 rootfs (see §8 for why proot):
 
@@ -119,7 +127,8 @@ Run in a pristine ubuntu-base-22.04.5 rootfs (see §8 for why proot):
 | T14 | no hardcoded `/home` paths in config/launcher |
 | T15 | icons: Symbols Nerd Font + fontconfig fallback installed; explorer uses nerd glyphs |
 | T16 | batch-open many files from explorer in tabs (mark+`<leader>tm`, visual+`<C-t>`) |
-| T17 | `dpkg -r` removes bundle+launcher; system nvim and user state kept |
+| T17 | Git Lens: blame text, change signs, changed-file quickfix, `[g`/`]g` (fake-git stub) |
+| T18 | `dpkg -r` removes bundle+launcher; system nvim and user state kept |
 
 ELF audit ceilings: max `GLIBC_2.34`, max `GLIBCXX_3.4.21` — inside the
 Ubuntu 22.04 baseline (2.35 / 3.4.30). glibc/libstdc++ are never bundled;
