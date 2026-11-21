@@ -26,6 +26,15 @@ map('n', '<C-l>', '<C-w>l', { desc = 'Window right' })
 map('n', '[b', '<cmd>bprevious<CR>', { desc = 'Previous buffer' })
 map('n', ']b', '<cmd>bnext<CR>', { desc = 'Next buffer' })
 
+-- Tabs ---------------------------------------------------------------------
+-- `gt` / `gT` are deliberately left as Neovim defaults (next / previous tab),
+-- including inside LSP buffers where type-definition moved to <leader>gt.
+map('n', '<leader>t', '<cmd>tabnew<CR>', { desc = 'New tab' })
+map('n', '<leader>tc', '<cmd>tabclose<CR>', { desc = 'Close tab' })
+map('n', '<leader>to', '<cmd>tabonly<CR>', { desc = 'Keep only this tab' })
+map('n', '<leader>tf', '<cmd>tabfirst<CR>', { desc = 'First tab' })
+map('n', '<leader>tl', '<cmd>tablast<CR>', { desc = 'Last tab' })
+
 -- Move selected lines ------------------------------------------------------
 map('v', 'J', ":m '>+1<CR>gv=gv", opts)
 map('v', 'K', ":m '<-2<CR>gv=gv", opts)

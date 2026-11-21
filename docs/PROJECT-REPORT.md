@@ -23,7 +23,7 @@ A complete, self-contained, **offline** Neovim distribution for Ubuntu
 | `dist/TEST-REPORT.md` | — | offline acceptance results |
 
 SHA-256 of the .deb:
-`0e50b76c19c411fc613fa50e85496b3aba96449acb1e8f4411106a0ba9115833`
+`73040d7cc9724dd180121a93811722e2ac675f64c065c325657b6848567bd6ff`
 
 Package metadata: `Depends: libc6 (>= 2.35), libgcc-s1, libstdc++6`,
 `Recommends: fontconfig`, `Architecture: amd64`. The only maintainer scripts
@@ -63,6 +63,13 @@ sudo dpkg -r nvim-forge                    # remove (user state kept)
 Keymaps and full usage: `docs/CHEATSHEET.md` (also in the repo).
 User state goes to `~/.local/state/nvim-forge`, `~/.cache/nvim-forge`,
 `~/.local/share/nvim-forge` — the bundle is read-only at runtime.
+
+Tabs work like editor groups: `nvim-forge -p f1 f2 f3` opens several files as
+tabs, `<C-t>` in the explorer/Telescope opens a selected file in a new tab,
+`<leader>t` opens an empty tab, and `gt`/`gT` (or `2gt`, mouse click) switch
+between them. `gt` is reserved for tabs even in LSP buffers — type definition
+was moved to `<leader>gt`. `<leader>tc`/`<leader>to` close tabs, and
+`<leader>tf`/`<leader>tl` jump to first/last.
 
 C/C++ compile database and fixes can be handled entirely from the editor:
 `compile_commands.json` in the project root (or `build/`) is found

@@ -136,7 +136,9 @@ lsp_test() { # id server file timeout
   sroot /usr/bin/env NVF_TEST_SERVER="$server" NVF_TEST_TIMEOUT="$tmo" \
     /usr/bin/nvim-forge --headless --cmd 'set nomore' \
     "$WORK/$file" -c 'luafile /nvf-build/tests/lsp_attach.lua'
-  if have "NVF-LSP-OK client=$server"; then
+  # Require a clean exit and no FAIL marker: the script prints NVF-LSP-OK
+  # before its keymap checks, so a mapping regression must not be masked.
+  if [[ $RC -eq 0 ]] && have "NVF-LSP-OK client=$server" && ! have 'NVF-LSP-FAIL'; then
     row PASS "$id" "LSP attach: $server ($file)"
   else
     row FAIL "$id" "LSP attach: $server ($file)" "rc=$RC ${OUT//$'\n'/ }"

@@ -31,7 +31,7 @@ Buffer-local — active once the server attaches (automatic on opening a
 | `gD` | n | go to declaration |
 | `gr` | n | references (telescope-style list) |
 | `gi` | n | implementations |
-| `gt` | n | type definition |
+| `<leader>gt` | n | type definition (`gt` is reserved for next tab) |
 | `K` | n | hover documentation (float) |
 | `<C-k>` | n | signature help (float) |
 | `<leader>rn` | n | rename symbol (all references) |
@@ -89,7 +89,25 @@ Extras that work without keymaps:
 | `<leader>E` | n | reveal the current file in the explorer |
 | `<C-h/j/k/l>` | n | move between windows (left/down/up/right) |
 | `:split` / `:vsplit` | — | split horizontally / vertically |
-| `:tabnew file` | — | new tab |
+
+Tabs (open many files, then switch):
+
+| Keys | Mode | Action |
+|---|---|---|
+| `nvim-forge -p f1.c f2.c f3.py` | shell | open each file in its own tab |
+| `<leader>t` | n | new tab |
+| `<C-t>` in explorer / Telescope | n | open the selected file in a new tab |
+| `gt` / `gT` | n | next / previous tab (`2gt` → tab 2) |
+| `<leader>tf` / `<leader>tl` | n | first / last tab |
+| `<leader>tc` / `<leader>to` | n | close tab / keep only this tab |
+| `:tabnew file`, `:tabclose [n]`, `:tabmove [n]` | — | new / close / reorder tab |
+
+`gt` / `gT` work in LSP buffers too — type definition moved to `<leader>gt`.
+The tab bar appears when there are 2+ tabs; you can also click a tab. Each
+tab has its own splits; buffers are shared, so edits stay in sync.
+
+| Keys | Mode | Action |
+|---|---|---|
 | `[q` / `]q` | n | previous / next quickfix entry |
 | `:copen` / `:lopen` | — | open quickfix / location list |
 

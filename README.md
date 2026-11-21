@@ -72,6 +72,11 @@ particular home directory, and no root privileges are required to run it.
 | `<leader>cd`    | set clangd `compile_commands.json` dir + restart |
 | `<leader>fi`    | toggle live diagnostics while typing         |
 | `[d` / `]d`     | prev / next diagnostic                       |
+| `<leader>t`     | open a new tab                               |
+| `gt` / `gT`     | next / previous tab (`2gt` = go to tab 2)    |
+| `<leader>tc` / `<leader>to` | close tab / keep only this tab    |
+| `<leader>tf` / `<leader>tl` | first / last tab                 |
+| `<leader>gt`    | LSP: go to type definition (`gt` stays "next tab") |
 | `<leader>e`     | toggle file explorer sidebar (nvim-tree)     |
 | `<leader>E`     | reveal current file in the explorer          |
 | `<leader>d`     | show diagnostic details as a float           |
@@ -97,6 +102,26 @@ monospace families (Ubuntu Mono, DejaVu Sans Mono, Liberation Mono, JetBrains
 Mono, …), so the icons render without changing your terminal font. On a
 terminal that does not use fontconfig, set `NVF_ICONS=ascii` to get plain
 `▸`/`▾` arrows instead of empty boxes; `NVF_ICONS=nerd` forces the glyphs.
+
+### Tabs (many files)
+
+Neovim tabs are like VS Code editor groups/tabs. A tab bar appears as soon as
+you have two or more tabs.
+
+- Open several files as tabs in one command:
+  `nvim-forge -p file1.c file2.c file3.py`
+- From the explorer: put the cursor on a file and press `<C-t>` (opens in a
+  new tab; you can press it repeatedly on many files).
+- From a Telescope picker (`<leader>ff`, `<leader>fb`, …): select a file and
+  press `<C-t>` to open it in a new tab; `<C-v>`/`<C-x>` open splits instead.
+- In an editor buffer: `<leader>t` for a new empty tab, `:tabnew file.c` for a
+  specific file.
+- Switch: `gt` / `gT` (next / previous), `2gt` / `3gt` (go to tab number),
+  `<leader>tf` / `<leader>tl` (first / last), or click a tab in the tab bar.
+- Close: `<leader>tc` (close current tab), `<leader>to` (keep only this tab),
+  `:tabclose 2` (close tab 2). `:tabmove 3` reorders the current tab.
+- Each tab keeps its own splits and explorer visibility. Files are buffers —
+  the same file can be visible in several tabs; edits stay in sync.
 
 ### Language servers
 

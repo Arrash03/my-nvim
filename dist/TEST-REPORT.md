@@ -1,7 +1,7 @@
 # nvim-forge offline test report
 
-- Package: `nvim-forge_1.0.0_amd64.deb` (289M, installed 1208792 KiB)
-- Built: 2026-11-18 18:23:41 UTC
+- Package: `nvim-forge_1.0.0_amd64.deb` (290M, installed 1208804 KiB)
+- Built: 2026-11-21 14:44:08 UTC
 - Target: Ubuntu 22.04 (amd64), glibc baseline 2.35 (Ubuntu 22.04)
 - Environment: proot 5.4.0 sandbox on a pristine ubuntu-base-22.04.5
   rootfs (used instead of Docker/Podman: neither is available on the
@@ -10,7 +10,7 @@
 
 | ID | Check | Result |
 |----|-------|--------|
-| T01 | SHA256SUMS verified; metadata ok (sha256=0e50b76c19c411fc…) | PASS |
+| T01 | SHA256SUMS verified; metadata ok (sha256=73040d7cc9724dd1…) | PASS |
 | T02 | clean dpkg -i install; system /usr/bin/nvim untouched | PASS |
 | T03 | nvim-forge --version -> NVIM v0.12.6 | PASS |
 | T04 | headless startup: theme, options, plugins, LSP config, exes | PASS |
@@ -27,7 +27,7 @@
 | T15 | icons: Symbols Nerd Font (2 faces) + fontconfig fallback; explorer uses nerd glyphs | PASS |
 | T16 | dpkg -r removes bundle + launcher; system nvim and user state kept | PASS |
 
-- Package SHA-256: `0e50b76c19c411fc613fa50e85496b3aba96449acb1e8f4411106a0ba9115833`
+- Package SHA-256: `73040d7cc9724dd180121a93811722e2ac675f64c065c325657b6848567bd6ff`
 
 ## Versions under test
 

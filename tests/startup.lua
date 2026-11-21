@@ -111,9 +111,13 @@ do
   end
   check('clangd honours project .clangd (--enable-config)', has_enable_config)
 end
-for _, key in ipairs({ '<leader>cd', '<leader>lr', '<leader>lc', '<leader>fi' }) do
+for _, key in ipairs({
+  '<leader>cd', '<leader>lr', '<leader>lc', '<leader>fi',
+  '<leader>t', '<leader>tc', '<leader>to', '<leader>tf', '<leader>tl',
+}) do
   check('mapping ' .. key .. ' defined', vim.fn.maparg(key, 'n') ~= '')
 end
+check('gt stays free for next-tab', vim.fn.maparg('gt', 'n') == '')
 
 -- Bundled executables -----------------------------------------------------
 local exe = {

@@ -261,7 +261,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
     map('n', 'gD', vim.lsp.buf.declaration, 'Go to declaration')
     map('n', 'gr', vim.lsp.buf.references, 'Find references')
     map('n', 'gi', vim.lsp.buf.implementation, 'Go to implementation')
-    map('n', 'gt', vim.lsp.buf.type_definition, 'Go to type definition')
+    -- `gt` / `gT` belong to tab navigation (next / previous tab); keep them
+    -- free even in LSP-attached buffers.
+    map('n', '<leader>gt', vim.lsp.buf.type_definition, 'Go to type definition')
 
     -- Documentation / actions ----------------------------------------------
     map('n', 'K', function()

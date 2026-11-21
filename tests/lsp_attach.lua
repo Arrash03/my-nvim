@@ -71,9 +71,10 @@ local function mapped(lhs)
   end
   return false
 end
-local wanted_maps = { 'gd', 'gr', 'K', '<leader>ca', '<leader>cf', '<leader>lf' }
+-- Note: <leader> is expanded to a leading space when the map is created.
+local wanted_maps = { 'gd', 'gr', 'K', ' ca', ' cf', ' lf', ' gt' }
 if expected == 'clangd' then
-  wanted_maps[#wanted_maps + 1] = '<leader>fn'
+  wanted_maps[#wanted_maps + 1] = ' fn'
 end
 local maps_ok = vim.wait(5000, function()
   for _, lhs in ipairs(wanted_maps) do
@@ -87,6 +88,12 @@ if not maps_ok then
   vim.cmd('cquit 1')
 end
 print('  keymaps ' .. table.concat(wanted_maps, ',') .. ' bound on attach')
+-- `gt` must stay available for "next tab" even in LSP buffers.
+if mapped('gt') then
+  print('NVF-LSP-FAIL gt is mapped; next-tab is broken in LSP buffers')
+  vim.cmd('cquit 1')
+end
+print('  gt left free for next-tab')
 
 -- Clean shutdown so no server outlives nvim (keeps exit codes reliable).
 pcall(function()
