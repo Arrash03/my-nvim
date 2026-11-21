@@ -135,18 +135,22 @@ yourself with `Enter`/`o`/double-click to reach any level. Start with
 | `<BS>` | close the parent folder and jump to it |
 | `<leader>E` (from editor) | reveal current file — expands its parent folders |
 | `<C-x>` / `<C-v>` / `<C-t>` | open in vertical / horizontal split / new tab |
+| `m` | toggle a mark/bookmark (in visual mode: mark all selected files) |
+| `<leader>tm` | open **all marked files, each in its own tab** |
+| `<C-t>` in visual mode | open **all selected files, each in its own tab** |
 | `a` | create file or directory (trailing `/` = directory) |
 | `A` | create file/directory without moving the cursor |
-| `r` / `R` | rename / bulk-rename |
+| `e` / `r` / `R` | rename basename / rename / bulk-rename |
+| `gp` | move (rename with target path) |
 | `d` / `D` | delete (trash) / permanently delete |
 | `x` / `c` / `p` | cut / copy / paste |
-| `m` | move (rename with target path) |
-| `.` | toggle hidden files (dotfiles) |
-| `H` | toggle gitignored files |
-| `U` | toggle filters (clean style) |
-| `I` | toggle icon visibility |
+| `f` / `F` | live filter / clear live filter |
+| `.` | run a shell command on the file |
+| `H` / `I` | toggle dotfiles / gitignored files |
 | `g?` | all-key help inside the tree |
 | `q` / `<Esc>` | close the explorer |
+
+`gt`/`gT` switch tabs afterwards; the tree stays open while files are opened.
 
 Icons: the package installs Symbols Nerd Font and a fontconfig fallback rule,
 so file/folder icons show up in normal terminals. If you still see empty

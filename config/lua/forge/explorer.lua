@@ -111,6 +111,33 @@ map('n', '<leader>E', function()
   api.tree.find_file({ open = true, focus = true })
 end, { desc = 'Reveal current file in explorer', nowait = true })
 
+-- Open many files from the tree, one per tab ---------------------------------
+-- nvim-tree's built-in <C-t> opens only the file under the cursor.  These two
+-- helpers make a batch of files a one-keystroke operation:
+--   normal mode:  mark files with `m`, then <leader>tm
+--   visual mode:  select files with v/V, then <C-t>
+-- api.node.open.tab returns focus to the tree after each file, so you can
+-- keep selecting without losing the directory structure.
+local function open_files_in_tabs(nodes)
+  local files = {}
+  for _, node in ipairs(nodes or {}) do
+    local path = node and node.absolute_path
+    if path and node.type == 'file' and vim.fn.filereadable(path) == 1 then
+      table.insert(files, node)
+    end
+  end
+  if #files == 0 then
+    vim.notify('No files selected for tabs', vim.log.levels.WARN)
+    return
+  end
+  for _, node in ipairs(files) do
+    pcall(api.node.open.tab, node)
+  end
+  pcall(api.marks.clear)
+  vim.notify(string.format('Opened %d file(s) in tabs; gt/gT to switch', #files),
+    vim.log.levels.INFO)
+end
+
 -- Useful defaults inside the tree window (nvim-tree also ships its own
 -- buffer-local maps: a create, r rename, d delete, x cut, p paste, ...).
 vim.api.nvim_create_autocmd('FileType', {
@@ -121,6 +148,17 @@ vim.api.nvim_create_autocmd('FileType', {
       vim.tbl_extend('force', b, { desc = 'Close explorer' }))
     vim.keymap.set('n', 'q', api.tree.close,
       vim.tbl_extend('force', b, { desc = 'Close explorer' }))
+    vim.keymap.set('n', '<leader>tm', function()
+      open_files_in_tabs(api.marks.list())
+    end, vim.tbl_extend('force', b, {
+      desc = 'Open marked files in tabs (mark with m first)',
+    }))
+    vim.keymap.set('x', '<C-t>', function()
+      local utils = require('nvim-tree.utils')
+      open_files_in_tabs(utils.get_visual_nodes())
+    end, vim.tbl_extend('force', b, {
+      desc = 'Open selected files in tabs',
+    }))
   end,
 })
 

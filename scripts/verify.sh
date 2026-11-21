@@ -20,7 +20,8 @@
 #   T13  network independence (netguard LD_PRELOAD + strace audit)
 #   T14  no hardcoded home paths in config/launcher
 #   T15  icon support: Symbols Nerd Font + fontconfig fallback rule
-#   T16  clean removal via dpkg -r (system Neovim + user state kept)
+#   T16  batch-open many files from the explorer, one tab each (marks + visual)
+#   T17  clean removal via dpkg -r (system Neovim + user state kept)
 #
 # Writes dist/TEST-REPORT.md.  Exit code = number of failed checks.
 # ---------------------------------------------------------------------------
@@ -276,6 +277,25 @@ else
     "ttf=${ttf_n:-0} conf=$conf_ok license=$license_ok mode=${icons_mode:-?} ${OUT//$'\n'/ }"
 fi
 
+# ---------------------------------- T17 batch tabs from the file explorer
+sroot /bin/bash -c '
+  mkdir -p '"$WORK"'/tree-tabs
+  for f in a.c b.c c.c; do printf "int %s;\n" "${f%.c}" > '"$WORK"'/tree-tabs/$f; done'
+tree_ok=1
+for mode in marks visual; do
+  sroot /usr/bin/env NVF_TREE_TABS_MODE="$mode" /usr/bin/nvim-forge --headless \
+    --cmd 'set nomore' "$WORK/tree-tabs" \
+    -c 'luafile /nvf-build/tests/tree_tabs.lua'
+  if [[ $RC -ne 0 ]] || ! have "NVF-TREE-TABS-OK $mode" || have NVF-TREE-TABS-FAIL; then
+    tree_ok=0
+  fi
+done
+if [[ $tree_ok -eq 1 ]]; then
+  row PASS T16 "batch tabs from explorer: mark+<leader>tm and visual+<C-t>"
+else
+  row FAIL T16 "batch tabs from explorer" "${OUT//$'\n'/ }"
+fi
+
 # ------------------------------------------------------ T16 clean removal
 sroot /bin/bash -c 'dpkg -r nvim-forge </dev/null'
 rm_rc=$RC; rm_out=$OUT
@@ -287,9 +307,9 @@ sroot /bin/bash -c '
   [ -d /home/tester/.local/state/nvim-forge ] && echo user-state-kept'
 if [[ $rm_rc -eq 0 ]] && have opt-gone && have launcher-gone \
    && have "$SYS_MD5" && have user-state-kept; then
-  row PASS T16 "dpkg -r removes bundle + launcher; system nvim and user state kept"
+  row PASS T17 "dpkg -r removes bundle + launcher; system nvim and user state kept"
 else
-  row FAIL T16 "clean removal" "rc=$rm_rc ${OUT//$'\n'/ }"
+  row FAIL T17 "clean removal" "rc=$rm_rc ${OUT//$'\n'/ }"
 fi
 
 # --------------------------------------------------------------- report

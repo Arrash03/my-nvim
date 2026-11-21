@@ -92,9 +92,17 @@ any level; `E` expands everything and `W` collapses everything back to the
 first level. `<leader>e` toggles the tree (reopens at first level),
 `<leader>E` explicitly reveals the current file, expanding its parent
 folders. Set `NVF_NO_TREE=1` in the environment to start without it. Inside
-the tree: `<CR>` open, `<C-v>`/`<C-x>` split, `a` create, `r` rename, `d`
-delete, `x`/`c`/`p` cut/copy/paste, `.` show hidden files, `g?` full key
-help, `q`/`<Esc>` close.
+the tree: `<CR>` open, `<C-t>` open in a new tab, `<C-v>`/`<C-x>` split, `a`
+create, `r` rename, `d` delete, `x`/`c`/`p` cut/copy/paste, `m` mark a file,
+`H` toggle hidden files, `g?` full key help, `q`/`<Esc>` close.
+
+To open **many files from the tree, each in its own tab**:
+- Mark the files one by one with `m` (or select several with `v`/`V` and press
+  `m` to mark them all), then press `<leader>tm`.
+- Or select consecutive files with `v`/`V` and press `<C-t>` directly.
+
+The explorer stays open while each file opens in its own tab; `gt`/`gT`
+switch between them afterwards.
 
 File and folder icons are Nerd Font glyphs. The package installs **Symbols
 Nerd Font** plus a fontconfig rule that adds it as a fallback for common
@@ -110,8 +118,9 @@ you have two or more tabs.
 
 - Open several files as tabs in one command:
   `nvim-forge -p file1.c file2.c file3.py`
-- From the explorer: put the cursor on a file and press `<C-t>` (opens in a
-  new tab; you can press it repeatedly on many files).
+- From the explorer: put the cursor on a file and press `<C-t>` for one file,
+  or mark several files with `m` and press `<leader>tm` (or visually select
+  them and press `<C-t>`) to open each in a tab in one go.
 - From a Telescope picker (`<leader>ff`, `<leader>fb`, …): select a file and
   press `<C-t>` to open it in a new tab; `<C-v>`/`<C-x>` open splits instead.
 - In an editor buffer: `<leader>t` for a new empty tab, `:tabnew file.c` for a
