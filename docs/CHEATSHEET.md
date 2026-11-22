@@ -96,7 +96,8 @@ Tabs (open many files, then switch):
 |---|---|---|
 | `nvim-forge -p f1.c f2.c f3.py` | shell | open each file in its own tab |
 | `<leader>t` | n | new tab |
-| `<C-t>` in explorer / Telescope | n | open the selected file in a new tab |
+| `<C-t>` in explorer / Telescope | n | open the selected file or search match in a new tab |
+| `<C-t>` in quickfix / location list | n | open the entry under the cursor in a new tab |
 | `gt` / `gT` | n | next / previous tab (`2gt` → tab 2) |
 | `<leader>tf` / `<leader>tl` | n | first / last tab |
 | `<leader>tc` / `<leader>to` | n | close tab / keep only this tab |

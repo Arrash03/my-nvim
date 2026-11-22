@@ -65,7 +65,11 @@ User state goes to `~/.local/state/nvim-forge`, `~/.cache/nvim-forge`,
 `~/.local/share/nvim-forge` — the bundle is read-only at runtime.
 
 Tabs work like editor groups: `nvim-forge -p f1 f2 f3` opens several files as
-tabs, `<C-t>` in the explorer/Telescope opens a selected file in a new tab.
+tabs, `<C-t>` in the explorer or a Telescope picker opens a selected file or
+text match in a new tab. Because `rg` is deliberately not bundled, `<leader>fg`
+falls back to `grep(1)` + quickfix; `<C-t>` is therefore also mapped in
+quickfix/location-list buffers (including Git changes, diagnostics and LSP
+reference lists) so the offline search path has the same behavior.
 To open **many files from the explorer at once**, mark them with `m` and press
 `<leader>tm`, or visually select them with `v`/`V` and press `<C-t>`; each
 file gets its own tab while the tree stays open. `<leader>t` opens an empty
@@ -114,9 +118,9 @@ Individual steps: `fetch.sh` (download+verify pins) → `sandbox.sh`
 (prepare Ubuntu 22.04 proot rootfses) → `build-parsers.sh` (compile
 grammars inside the 22.04 sandbox) → `stage.sh` (assemble /opt tree) →
 `check-elf.sh` (ldd + glibc ceilings) → `build-deb.sh` → `verify.sh`
-(19-check offline acceptance suite, writes `dist/TEST-REPORT.md`).
+(20-check offline acceptance suite, writes `dist/TEST-REPORT.md`).
 
-## 6. Test results — 19/19 PASS
+## 6. Test results — 20/20 PASS
 
 Run in a pristine ubuntu-base-22.04.5 rootfs (see §8 for why proot):
 
@@ -137,7 +141,8 @@ Run in a pristine ubuntu-base-22.04.5 rootfs (see §8 for why proot):
 | T16 | batch-open many files from explorer in tabs (mark+`<leader>tm`, visual+`<C-t>`) |
 | T17 | Git Lens: blame text, change signs, changed-file quickfix, `[g`/`]g` (fake-git stub) |
 | T18 | completion: LSP/snippet/buffer sources, mappings, live buffer suggestion |
-| T19 | `dpkg -r` removes bundle+launcher; system nvim and user state kept |
+| T19 | search results: Telescope + quickfix/location `<C-t>` opens tabs |
+| T20 | `dpkg -r` removes bundle+launcher; system nvim and user state kept |
 
 ELF audit ceilings: max `GLIBC_2.34`, max `GLIBCXX_3.4.21` — inside the
 Ubuntu 22.04 baseline (2.35 / 3.4.30). glibc/libstdc++ are never bundled;

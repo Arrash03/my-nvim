@@ -125,8 +125,13 @@ you have two or more tabs.
 - From the explorer: put the cursor on a file and press `<C-t>` for one file,
   or mark several files with `m` and press `<leader>tm` (or visually select
   them and press `<C-t>`) to open each in a tab in one go.
-- From a Telescope picker (`<leader>ff`, `<leader>fb`, …): select a file and
-  press `<C-t>` to open it in a new tab; `<C-v>`/`<C-x>` open splits instead.
+- From a Telescope picker (`<leader>ff`, `<leader>fg` with `rg`, `<leader>fb`,
+  …): select a file or text match and press `<C-t>` to open it in a new tab;
+  `<C-v>`/`<C-x>` open splits instead.
+- Text search without `rg` uses a quickfix list (`<leader>fg`). Put the cursor
+  on a match and press `<C-t>` to open that file at the matching line in a new
+  tab. The same key works in location lists, Git change lists, diagnostics,
+  and LSP reference lists.
 - In an editor buffer: `<leader>t` for a new empty tab, `:tabnew file.c` for a
   specific file.
 - Switch: `gt` / `gT` (next / previous), `2gt` / `3gt` (go to tab number),
