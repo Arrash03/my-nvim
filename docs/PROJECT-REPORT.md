@@ -78,6 +78,13 @@ between them. `gt` is reserved for tabs even in LSP buffers — type definition
 was moved to `<leader>gt`. `<leader>tc`/`<leader>to` close tabs, and
 `<leader>tf`/`<leader>tl` jump to first/last.
 
+Search can be restricted with `<leader>fG`: it prompts for the pattern, then
+comma-separated include and exclude globs. With ripgrep present it opens
+Telescope live_grep with `rg --glob` filters; on the offline target it uses
+`grep(1)` with `--include`/`--exclude`/`--exclude-dir` and fills quickfix. A
+trailing slash excludes a directory (e.g. `vendor/`). Acceptance T20 checks the
+generated command and runs a real filtered search.
+
 Optional Git Lens works without bundling git: when a `git` executable is on
 `PATH`, added/deleted lines get signcolumn marks (staged + unstaged),
 `:NVFGitBlame` (`<leader>gb`) overlays compact author/date/summary blame text,
@@ -118,9 +125,9 @@ Individual steps: `fetch.sh` (download+verify pins) → `sandbox.sh`
 (prepare Ubuntu 22.04 proot rootfses) → `build-parsers.sh` (compile
 grammars inside the 22.04 sandbox) → `stage.sh` (assemble /opt tree) →
 `check-elf.sh` (ldd + glibc ceilings) → `build-deb.sh` → `verify.sh`
-(20-check offline acceptance suite, writes `dist/TEST-REPORT.md`).
+(21-check offline acceptance suite, writes `dist/TEST-REPORT.md`).
 
-## 6. Test results — 20/20 PASS
+## 6. Test results — 21/21 PASS
 
 Run in a pristine ubuntu-base-22.04.5 rootfs (see §8 for why proot):
 
@@ -142,7 +149,8 @@ Run in a pristine ubuntu-base-22.04.5 rootfs (see §8 for why proot):
 | T17 | Git Lens: blame text, change signs, changed-file quickfix, `[g`/`]g` (fake-git stub) |
 | T18 | completion: LSP/snippet/buffer sources, mappings, live buffer suggestion |
 | T19 | search results: Telescope + quickfix/location `<C-t>` opens tabs |
-| T20 | `dpkg -r` removes bundle+launcher; system nvim and user state kept |
+| T20 | filtered grep: include/exclude globs produce the right quickfix matches |
+| T21 | `dpkg -r` removes bundle+launcher; system nvim and user state kept |
 
 ELF audit ceilings: max `GLIBC_2.34`, max `GLIBCXX_3.4.21` — inside the
 Ubuntu 22.04 baseline (2.35 / 3.4.30). glibc/libstdc++ are never bundled;

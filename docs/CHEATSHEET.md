@@ -80,6 +80,7 @@ Extras that work without keymaps:
 | `<leader>fo` | n | recent files |
 | `<leader>fb` | n | open buffers (MRU sorted) |
 | `<leader>fg` | n | live grep (ripgrep; falls back to grep → quickfix) |
+| `<leader>fG` | n | grep with include/exclude file globs |
 | `<leader>fs` | n | document symbols (outline of current file) |
 | `<leader>fd` | n | diagnostics picker (all buffers) |
 | `<leader>fh` | n | help tags |
@@ -89,6 +90,18 @@ Extras that work without keymaps:
 | `<leader>E` | n | reveal the current file in the explorer |
 | `<C-h/j/k/l>` | n | move between windows (left/down/up/right) |
 | `:split` / `:vsplit` | — | split horizontally / vertically |
+
+`<leader>fG` prompts for a pattern, include globs, and exclude globs. Use
+comma-separated globs:
+
+```text
+Include: *.py,src/*.c
+Exclude: test_*.py,*.min.js,vendor/
+```
+
+Leave include blank for all files, exclude blank for none. A trailing `/`
+excludes a directory (`vendor/`). With `rg`, results open in Telescope with
+`--glob` filters; without `rg`, the offline `grep` fallback fills quickfix.
 
 Tabs (open many files, then switch):
 

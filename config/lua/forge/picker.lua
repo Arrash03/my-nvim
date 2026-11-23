@@ -61,6 +61,54 @@ map('n', '<leader>fs', builtin.lsp_document_symbols, { desc = 'Document symbols'
 map('n', '<leader>fr', builtin.resume, { desc = 'Resume picker' })
 
 -- Grep: ripgrep when available, grep(1)+quickfix fallback otherwise. --------
+local M = {}
+
+local function split_globs(value)
+  local globs = {}
+  for _, item in ipairs(vim.split(value or '', ',',
+      { plain = true, trimempty = true })) do
+    item = vim.trim(item)
+    if item ~= '' then globs[#globs + 1] = item end
+  end
+  return globs
+end
+
+local function normalize_globs(value)
+  if type(value) == 'string' then return split_globs(value) end
+  return value or {}
+end
+
+function M.build_grep_command(pattern, include, exclude)
+  local cmd = {
+    'grep', '-rn', '--binary-files=without-match',
+    '--exclude-dir=.git', '--exclude-dir=node_modules',
+    '--exclude-dir=target',
+  }
+  for _, glob in ipairs(normalize_globs(include)) do
+    cmd[#cmd + 1] = '--include=' .. glob
+  end
+  for _, glob in ipairs(normalize_globs(exclude)) do
+    if glob:sub(-1) == '/' then
+      cmd[#cmd + 1] = '--exclude-dir=' .. glob:sub(1, -2)
+    else
+      cmd[#cmd + 1] = '--exclude=' .. glob
+    end
+  end
+  vim.list_extend(cmd, { '--', pattern, '.' })
+  return cmd
+end
+
+local function run_grep(pattern, include, exclude)
+  local lines = vim.fn.systemlist(
+    M.build_grep_command(pattern, include, exclude))
+  vim.fn.setqflist({}, ' ', { title = 'grep: ' .. pattern, lines = lines })
+  if vim.fn.getqflist({ size = 0 }).size == 0 then
+    vim.notify('No matches for: ' .. pattern, vim.log.levels.INFO)
+  else
+    vim.cmd('copen')
+  end
+end
+
 local function grep_args()
   if vim.fn.executable('rg') == 1 then
     return builtin.live_grep
@@ -71,29 +119,57 @@ local function grep_args()
     if pattern == '' then
       return
     end
-    vim.fn.setqflist({}, ' ', {
-      title = 'grep: ' .. pattern,
-      lines = vim.fn.systemlist({
-        'grep', '-rn', '--binary-files=without-match',
-        '--exclude-dir=.git', '--exclude-dir=node_modules',
-        '--exclude-dir=target', '--', pattern, '.',
-      }),
-    })
-    if vim.fn.getqflist({ size = 0 }).size == 0 then
-      vim.notify('No matches for: ' .. pattern, vim.log.levels.INFO)
-    else
-      vim.cmd('copen')
+    run_grep(pattern)
+  end
+end
+
+--- Search with optional include/exclude file globs.
+---
+--- With ripgrep installed this opens Telescope live_grep with rg --glob
+--- arguments.  On the offline target (no rg) it runs grep(1) and fills the
+--- quickfix list, using --include/--exclude (and --exclude-dir for a glob
+--- ending in "/").
+---@param opts? { pattern?: string, include?: string|string[], exclude?: string|string[], force_grep?: boolean }
+function M.grep_with_filters(opts)
+  opts = opts or {}
+  local pattern = opts.pattern
+  if pattern == nil or pattern == '' then
+    pattern = vim.fn.input('Grep pattern: ')
+    if pattern == '' then return end
+  end
+  local include = opts.include
+  if include == nil then
+    include = vim.fn.input(
+      'Include globs (comma-separated; blank = all files): ')
+  end
+  local exclude = opts.exclude
+  if exclude == nil then
+    exclude = vim.fn.input(
+      'Exclude globs (comma-separated; blank = none): ')
+  end
+  include = normalize_globs(include)
+  exclude = normalize_globs(exclude)
+
+  if vim.fn.executable('rg') == 1 and not opts.force_grep then
+    local globs = {}
+    for _, glob in ipairs(include) do globs[#globs + 1] = glob end
+    for _, glob in ipairs(exclude) do
+      globs[#globs + 1] = glob:sub(-1) == '/' and '!' .. glob .. '**'
+        or '!' .. glob
     end
+    builtin.live_grep({ default_text = pattern, glob_pattern = globs })
+  else
+    run_grep(pattern, include, exclude)
   end
 end
 
 map('n', '<leader>fg', grep_args(), { desc = 'Live grep (rg or grep fallback)' })
+map('n', '<leader>fG', function() M.grep_with_filters() end,
+  { desc = 'Grep with include/exclude filters' })
 
 -- Quickfix / location-list results (the no-rg grep fallback, git changes,
 -- diagnostics, LSP references) get the same "open in another tab" key as
 -- Telescope.  The list stays visible in the original tab.
-local M = {}
-
 local function entry_at_cursor()
   local index = vim.fn.line('.')
   -- In a location-list window getloclist(0) is populated; in a quickfix

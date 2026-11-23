@@ -124,7 +124,7 @@ do
   check('clangd honours project .clangd (--enable-config)', has_enable_config)
 end
 for _, key in ipairs({
-  '<leader>cd', '<leader>lr', '<leader>lc', '<leader>fi',
+  '<leader>cd', '<leader>lr', '<leader>lc', '<leader>fi', '<leader>fG',
   '<leader>t', '<leader>tc', '<leader>to', '<leader>tf', '<leader>tl',
 }) do
   check('mapping ' .. key .. ' defined', vim.fn.maparg(key, 'n') ~= '')

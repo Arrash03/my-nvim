@@ -24,7 +24,8 @@
 #   T17  Git Lens: inline blame + uncommitted files (offline fake-git stub)
 #   T18  completion: LSP/buffer/snippet sources, mappings, real buffer suggestion
 #   T19  search results open in another tab (Telescope + quickfix/location list)
-#   T20  clean removal via dpkg -r (system Neovim + user state kept)
+#   T20  filtered grep: include/exclude globs on the offline grep fallback
+#   T21  clean removal via dpkg -r (system Neovim + user state kept)
 #
 # Writes dist/TEST-REPORT.md.  Exit code = number of failed checks.
 # ---------------------------------------------------------------------------
@@ -332,7 +333,16 @@ else
   row FAIL T19 "search results in tabs" "rc=$RC ${OUT//$'\n'/ }"
 fi
 
-# ------------------------------------------------------ T20 clean removal
+# ------------------------------------- T20 include/exclude grep filters
+sroot /usr/bin/nvim-forge --headless --cmd 'set nomore' \
+  "$WORK/search-tabs.txt" -c 'luafile /nvf-build/tests/grep_filters.lua'
+if [[ $RC -eq 0 ]] && have NVF-GREP-FILTERS-OK && ! have NVF-GREP-FILTERS-FAIL; then
+  row PASS T20 "grep filters: include/exclude globs select the right files"
+else
+  row FAIL T20 "grep include/exclude filters" "rc=$RC ${OUT//$'\n'/ }"
+fi
+
+# ------------------------------------------------------ T21 clean removal
 sroot /bin/bash -c 'dpkg -r nvim-forge </dev/null'
 rm_rc=$RC; rm_out=$OUT
 sroot /bin/bash -c '
@@ -343,9 +353,9 @@ sroot /bin/bash -c '
   [ -d /home/tester/.local/state/nvim-forge ] && echo user-state-kept'
 if [[ $rm_rc -eq 0 ]] && have opt-gone && have launcher-gone \
    && have "$SYS_MD5" && have user-state-kept; then
-  row PASS T20 "dpkg -r removes bundle + launcher; system nvim and user state kept"
+  row PASS T21 "dpkg -r removes bundle + launcher; system nvim and user state kept"
 else
-  row FAIL T20 "clean removal" "rc=$rm_rc ${OUT//$'\n'/ }"
+  row FAIL T21 "clean removal" "rc=$rm_rc ${OUT//$'\n'/ }"
 fi
 
 # --------------------------------------------------------------- report

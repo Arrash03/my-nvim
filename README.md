@@ -82,10 +82,24 @@ particular home directory, and no root privileges are required to run it.
 | `<leader>d`     | show diagnostic details as a float           |
 | `<leader>ff`    | find files (Telescope)                       |
 | `<leader>fg`    | live grep                                    |
+| `<leader>fG`    | grep with include/exclude file filters       |
 | `<leader>gc`    | Git: list changed/untracked files            |
 | `<leader>gb`    | Git: toggle inline blame                     |
 | `<leader>gR`    | Git: refresh change marks and blame          |
 | `[g` / `]g`     | prev / next changed line in current buffer   |
+
+### Search only selected files
+
+`<leader>fG` asks for three things:
+
+1. the search pattern,
+2. **include** globs — comma-separated, for example `*.py,src/*.c`; leave blank for all files,
+3. **exclude** globs — comma-separated, for example `test_*.py,*.min.js,vendor/`; leave blank for none.
+
+A glob ending in `/` excludes that directory (e.g. `vendor/`). With ripgrep
+available this opens Telescope’s live grep with `rg --glob` filters; on the
+offline target it runs `grep -rn` with `--include`/`--exclude`/`--exclude-dir`
+and fills the quickfix list. `<C-t>` still opens any result in another tab.
 
 ### File explorer
 
