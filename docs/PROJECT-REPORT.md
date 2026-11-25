@@ -85,12 +85,13 @@ Telescope live_grep with `rg --glob` filters; on the offline target it uses
 trailing slash excludes a directory (e.g. `vendor/`). Acceptance T20 checks the
 generated command and runs a real filtered search.
 
-Indentation is filetype-driven: C, C++, Rust and CMake use literal tab
-characters (`noexpandtab`, `tabstop=4`, `shiftwidth=4`, `softtabstop=0`), while
-Python uses four spaces (`expandtab`, `tabstop/shiftwidth/softtabstop=4`). Lua
-keeps its 2-space ecosystem convention and Markdown keeps prose-friendly
-2-space settings. Acceptance T21 presses Tab in each of these filetypes and
-checks the resulting character.
+Indentation defaults to literal tab characters everywhere: a catch-all
+`FileType *` autocmd sets `noexpandtab`, `tabstop=4`, `shiftwidth=4` and
+`softtabstop=0`, so C, C++, Rust, CMake and unclassified files all get a real
+tab. Only explicit exceptions opt into spaces: Python
+(`expandtab`, `tabstop/shiftwidth/softtabstop=4`), Lua (2 spaces) and Markdown
+(2 spaces, plus prose wrapping). Acceptance T21 presses Tab in the default
+case and in every exception and checks the resulting character.
 
 Optional Git Lens works without bundling git: when a `git` executable is on
 `PATH`, added/deleted lines get signcolumn marks (staged + unstaged),
@@ -165,7 +166,7 @@ Run in a pristine ubuntu-base-22.04.5 rootfs (see §8 for why proot):
 | T18 | completion: LSP/snippet/buffer sources, mappings, live buffer suggestion |
 | T19 | search results: Telescope + quickfix/location `<C-t>` opens tabs |
 | T20 | filtered grep: include/exclude globs produce the right quickfix matches |
-| T21 | indentation: literal tabs in C/C++/Rust/CMake, 4 spaces in Python |
+| T21 | indentation: literal tabs by default; Python/Lua/Markdown keep spaces |
 | T22 | command mode: `<Tab>` popup with command/file suggestions |
 | T23 | `dpkg -r` removes bundle+launcher; system nvim and user state kept |
 

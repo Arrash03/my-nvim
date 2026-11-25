@@ -1,7 +1,7 @@
 # nvim-forge offline test report
 
-- Package: `nvim-forge_1.0.0_amd64.deb` (290M, installed 1208812 KiB)
-- Built: 2026-11-25 11:29:32 UTC
+- Package: `nvim-forge_1.0.0_amd64.deb` (289M, installed 1208820 KiB)
+- Built: 2026-11-25 13:00:39 UTC
 - Target: Ubuntu 22.04 (amd64), glibc baseline 2.35 (Ubuntu 22.04)
 - Environment: proot 5.4.0 sandbox on a pristine ubuntu-base-22.04.5
   rootfs (used instead of Docker/Podman: neither is available on the
@@ -10,7 +10,7 @@
 
 | ID | Check | Result |
 |----|-------|--------|
-| T01 | SHA256SUMS verified; metadata ok (sha256=8585e870d62983c5…) | PASS |
+| T01 | SHA256SUMS verified; metadata ok (sha256=5b12a0bcd57e2596…) | PASS |
 | T02 | clean dpkg -i install; system /usr/bin/nvim untouched | PASS |
 | T03 | nvim-forge --version -> NVIM v0.12.6 | PASS |
 | T04 | headless startup: theme, options, plugins, LSP config, exes | PASS |
@@ -30,11 +30,11 @@
 | T18 | completion: LSP+snippet+buffer sources, mappings, live buffer suggestion | PASS |
 | T19 | search: Telescope <C-t> + quickfix/location-list <C-t> open in new tabs | PASS |
 | T20 | grep filters: include/exclude globs select the right files | PASS |
-| T21 | indent: real tabs in C/C++/Rust/CMake, 4 spaces in Python | PASS |
+| T21 | indent: literal tabs by default; Python/Lua/Markdown keep spaces | PASS |
 | T22 | command mode: <Tab> popup lists commands/files; NVF commands offered | PASS |
 | T23 | dpkg -r removes bundle + launcher; system nvim and user state kept | PASS |
 
-- Package SHA-256: `8585e870d62983c5bc90ecade738fc900ced1065e93919135960478836081ffa`
+- Package SHA-256: `5b12a0bcd57e2596206879d019e7b7da449059361d097c09e32e340366c355ce`
 
 ## Versions under test
 

@@ -1,4 +1,4 @@
--- Indentation policy: real tabs for C/C++/Rust/CMake, 4 spaces for Python.
+-- Indentation policy: literal tabs by default; explicit space exceptions.
 local failures = 0
 local function check(name, ok, detail)
   print(string.format('%s %s%s', ok and 'ok  ' or 'FAIL', name,
@@ -24,6 +24,12 @@ local function options_for(filetype)
   }
 end
 
+-- Anything not explicitly exempted uses literal tabs.
+local def = options_for('text')
+check('default: noexpandtab', def.expandtab == false, tostring(def.expandtab))
+check('default: softtabstop 0 (literal tab)', def.softtabstop == 0,
+  tostring(def.softtabstop))
+
 for _, ft in ipairs({ 'c', 'cpp', 'rust', 'cmake' }) do
   local o = options_for(ft)
   check(ft .. ': noexpandtab', o.expandtab == false, tostring(o.expandtab))
@@ -40,6 +46,18 @@ check('python: 4 spaces', py.tabstop == 4 and py.shiftwidth == 4
   and py.softtabstop == 4,
   'ts=' .. py.tabstop .. ' sw=' .. py.shiftwidth .. ' sts=' .. py.softtabstop)
 
+local lua = options_for('lua')
+check('lua: expandtab', lua.expandtab == true, tostring(lua.expandtab))
+check('lua: 2 spaces', lua.tabstop == 2 and lua.shiftwidth == 2
+  and lua.softtabstop == 2,
+  'ts=' .. lua.tabstop .. ' sw=' .. lua.shiftwidth .. ' sts=' .. lua.softtabstop)
+
+local md = options_for('markdown')
+check('markdown: expandtab', md.expandtab == true, tostring(md.expandtab))
+check('markdown: 2 spaces', md.tabstop == 2 and md.shiftwidth == 2
+  and md.softtabstop == 2,
+  'ts=' .. md.tabstop .. ' sw=' .. md.shiftwidth .. ' sts=' .. md.softtabstop)
+
 -- Pressing Tab must insert the actual character, not just set options.
 local function tab_insert(filetype)
   fresh_buffer(filetype)
@@ -55,6 +73,16 @@ end
 local py_line = tab_insert('python')
 check('python: Tab inserts four spaces', py_line == '    ',
   string.format('%q', py_line))
+
+local def_line = tab_insert('text')
+check('default: Tab inserts a tab', def_line == '\t',
+  string.format('%q', def_line))
+local lua_line = tab_insert('lua')
+check('lua: Tab inserts two spaces', lua_line == '  ',
+  string.format('%q', lua_line))
+local md_line = tab_insert('markdown')
+check('markdown: Tab inserts two spaces', md_line == '  ',
+  string.format('%q', md_line))
 
 -- CMakeLists.txt is detected as cmake and therefore uses tabs too.
 local dir = vim.fn.tempname()

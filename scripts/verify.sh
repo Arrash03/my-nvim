@@ -25,7 +25,7 @@
 #   T18  completion: LSP/buffer/snippet sources, mappings, real buffer suggestion
 #   T19  search results open in another tab (Telescope + quickfix/location list)
 #   T20  filtered grep: include/exclude globs on the offline grep fallback
-#   T21  indentation: tabs for C/C++/Rust/CMake, 4 spaces for Python
+#   T21  indentation: literal tabs by default; Python/Lua/Markdown keep spaces
 #   T22  command-line suggestions: Tab popup for :commands and file names
 #   T23  clean removal via dpkg -r (system Neovim + user state kept)
 #
@@ -348,7 +348,7 @@ fi
 sroot /usr/bin/nvim-forge --headless --cmd 'set nomore' \
   "$WORK/indent.txt" -c 'luafile /nvf-build/tests/indent.lua'
 if [[ $RC -eq 0 ]] && have NVF-INDENT-OK && ! have NVF-INDENT-FAIL; then
-  row PASS T21 "indent: real tabs in C/C++/Rust/CMake, 4 spaces in Python"
+  row PASS T21 "indent: literal tabs by default; Python/Lua/Markdown keep spaces"
 else
   row FAIL T21 "indentation policy" "rc=$RC ${OUT//$'\n'/ }"
 fi

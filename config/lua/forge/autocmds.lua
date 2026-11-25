@@ -8,8 +8,23 @@ local augroup = function(name)
 end
 
 -- Indentation policy --------------------------------------------------------
--- Python: 4 spaces. C/C++/Rust/CMake: real tab characters, displayed 4 wide.
--- Lua (our own config): 2 spaces, the ecosystem convention.
+-- Default for every filetype (including files that have no detected type):
+-- a real tab character, displayed 4 columns wide.  Only the explicitly listed
+-- space-indented exceptions below opt into spaces.
+vim.api.nvim_create_autocmd('FileType', {
+  group = augroup('indent_default_tabs'),
+  pattern = '*',
+  callback = function(ev)
+    -- softtabstop=0 makes <Tab> insert a literal tab at any column.
+    vim.bo[ev.buf].expandtab = false
+    vim.bo[ev.buf].shiftwidth = 4
+    vim.bo[ev.buf].tabstop = 4
+    vim.bo[ev.buf].softtabstop = 0
+    vim.bo[ev.buf].smartindent = true
+  end,
+})
+
+-- Space-indented exceptions -------------------------------------------------
 vim.api.nvim_create_autocmd('FileType', {
   group = augroup('indent_spaces'),
   pattern = { 'python' },
@@ -23,26 +38,27 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 vim.api.nvim_create_autocmd('FileType', {
+  group = augroup('indent_lua'),
+  pattern = 'lua',
+  callback = function(ev)
+    vim.bo[ev.buf].expandtab = true
+    vim.bo[ev.buf].shiftwidth = 2
+    vim.bo[ev.buf].tabstop = 2
+    vim.bo[ev.buf].softtabstop = 2
+  end,
+})
+
+-- C/C++/Rust/CMake are already covered by the default; keep this explicit so
+-- the intent stays visible if the global policy is ever changed again.
+vim.api.nvim_create_autocmd('FileType', {
   group = augroup('indent_tabs'),
   pattern = { 'c', 'cpp', 'rust', 'cmake' },
   callback = function(ev)
-    -- softtabstop=0 makes <Tab> insert a literal tab at any column;
-    -- shiftwidth/tabstop=4 keep alignment and autoindent consistent.
     vim.bo[ev.buf].expandtab = false
     vim.bo[ev.buf].shiftwidth = 4
     vim.bo[ev.buf].tabstop = 4
     vim.bo[ev.buf].softtabstop = 0
     vim.bo[ev.buf].smartindent = true
-  end,
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-  group = augroup('indent_lua'),
-  pattern = 'lua',
-  callback = function(ev)
-    vim.bo[ev.buf].shiftwidth = 2
-    vim.bo[ev.buf].tabstop = 2
-    vim.bo[ev.buf].softtabstop = 2
   end,
 })
 

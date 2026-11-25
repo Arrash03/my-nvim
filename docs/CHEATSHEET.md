@@ -200,9 +200,10 @@ boxes, run with `NVF_ICONS=ascii nvim-forge` for plain `▸`/`▾` arrows (or
 
 Auto behaviour (no keys needed):
 
-- Pressing `Tab` inserts a real tab in C/C++/Rust/CMake (displayed 4 columns)
-  and **4 spaces** in Python. Lua uses 2 spaces; Markdown uses 2 spaces and
-  prose-friendly defaults. Smart indent is enabled everywhere.
+- Pressing `Tab` inserts a **real tab by default** in every file (displayed 4
+  columns), including C/C++/Rust/CMake and files with no detected filetype.
+  Exceptions that use spaces: Python = 4, Lua = 2, Markdown = 2 (with
+  prose-friendly defaults). Smart indent is enabled everywhere.
 - In **command mode** (`:`), type a partial command/file name and press `Tab`:
   a popup lists all matches. Press `Tab` again (or `Shift-Tab`) to cycle through
   them; `Enter` runs the completed command.

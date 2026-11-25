@@ -32,7 +32,7 @@ o.hlsearch = true
 o.inccommand = 'split'       -- live preview for :s substitutions
 
 -- Editing ------------------------------------------------------------------
-o.expandtab = true           -- spaces by default; filetypes may override
+o.expandtab = false          -- literal tabs by default; space filetypes opt in
 o.shiftwidth = 4
 o.tabstop = 4
 o.softtabstop = 4

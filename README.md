@@ -103,9 +103,11 @@ and fills the quickfix list. `<C-t>` still opens any result in another tab.
 
 ### Indentation
 
-Pressing `Tab` inserts a **real tab** in C, C++, Rust, and CMake files
-(displayed 4 columns wide). In Python files it inserts **4 spaces**. Lua uses
-2 spaces and Markdown uses 2 spaces with prose-friendly wrapping.
+Pressing `Tab` inserts a **real tab by default** in every file — including
+files with no detected filetype — displayed 4 columns wide. This covers
+C, C++, Rust, and CMake without any extra setup. Only explicit exceptions opt
+into spaces: Python uses **4 spaces**, Lua uses **2 spaces**, and Markdown uses
+2 spaces with prose-friendly wrapping.
 
 ### File explorer
 
