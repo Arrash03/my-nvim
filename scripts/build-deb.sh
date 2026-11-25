@@ -2,8 +2,10 @@
 # Build dist/nvim-forge_<version>_amd64.deb from the staged tree.
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
-VERSION=$(jqv '.version // empty')
-[[ -n "$VERSION" ]] || VERSION=1.0.0
+# NVF_VERSION wins over the manifest so CI can build a caller-supplied version
+# (workflow_dispatch input or a `v<version>` git tag).
+VERSION=${NVF_VERSION:-$(jqv '.version // empty')}
+VERSION=${VERSION:-1.0.0}
 
 DEBIAN="$STAGE_DIR/root/DEBIAN"
 mkdir -p "$DEBIAN"

@@ -143,6 +143,14 @@ grammars inside the 22.04 sandbox) → `stage.sh` (assemble /opt tree) →
 `check-elf.sh` (ldd + glibc ceilings) → `build-deb.sh` → `verify.sh`
 (23-check offline acceptance suite, writes `dist/TEST-REPORT.md`).
 
+The version is read from `manifest/pins-locked.json` (`version`, default
+`1.0.0`) and can be overridden with `NVF_VERSION`, e.g.
+`NVF_VERSION=1.2.3 bash scripts/build-all.sh`. The same override is used by
+GitHub Actions: `.github/workflows/build-deb.yml` accepts a manual `version`
+input and also triggers on `v<version>` tags. Explicit versions publish both
+the rolling `continuous` release and a `v<version>` release; ordinary master
+pushes only refresh `continuous`.
+
 ## 6. Test results — 23/23 PASS
 
 Run in a pristine ubuntu-base-22.04.5 rootfs (see §8 for why proot):

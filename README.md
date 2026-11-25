@@ -321,11 +321,20 @@ bash scripts/sandbox.sh      # prepare Ubuntu 22.04 build/test rootfs (proot)
 bash scripts/build-parsers.sh  # compile Tree-sitter parsers in 22.04 sandbox
 bash scripts/stage.sh        # assemble /opt/nvim-forge tree
 bash scripts/check-elf.sh    # audit shared libs / glibc ceilings
-bash scripts/build-deb.sh    # produce dist/nvim-forge_1.0.0_amd64.deb
+bash scripts/build-deb.sh    # produce dist/nvim-forge_<version>_amd64.deb
 bash scripts/verify.sh       # run the offline test suite, write TEST-REPORT.md
 ```
 
-Builds use a proot-based Ubuntu 22.04 sandbox (no Docker required).
+Builds use a proot-based Ubuntu 22.04 sandbox (no Docker required). To build a
+specific version locally, set `NVF_VERSION`:
+
+```sh
+NVF_VERSION=1.2.3 bash scripts/build-all.sh
+# -> dist/nvim-forge_1.2.3_amd64.deb
+```
+
+`NVF_VERSION` overrides the (usually null) `version` field in
+`manifest/pins-locked.json`; when neither is set, the version is `1.0.0`.
 
 ## Continuous deployment
 
@@ -333,15 +342,31 @@ Every push to `master` triggers `.github/workflows/build-deb.yml`, which on
 a clean Ubuntu 24.04 runner:
 
 1. installs host tooling (jq, gcc, libtalloc-dev, ...),
-2. builds proot (`scripts/build-proot.sh`, with a vendored-talloc fallback),
-3. restores the checksum-pinned download cache (keyed on
+2. resolves the package version (manifest `version`, defaulting to `1.0.0`),
+3. builds proot (`scripts/build-proot.sh`, with a vendored-talloc fallback),
+4. restores the checksum-pinned download cache (keyed on
    `manifest/pins-locked.json`),
-4. runs `scripts/build-all.sh` (fetch + verify pins → 22.04 sandbox →
-   Tree-sitter parsers → stage → ELF audit → .deb → 16-check suite),
-5. uploads the .deb / SHA256SUMS / TEST-REPORT.md as run artifacts, and
-6. re-publishes them on the rolling **`continuous`** prerelease (the tag and
+5. runs `scripts/build-all.sh` (fetch + verify pins → 22.04 sandbox →
+   Tree-sitter parsers → stage → ELF audit → .deb → 23-check suite),
+6. uploads the .deb / SHA256SUMS / TEST-REPORT.md as run artifacts (named with
+   the resolved version), and
+7. re-publishes them on the rolling **`continuous`** prerelease (the tag and
    release are refreshed in place on every push; the release notes carry the
-   commit, SHA-256 and test tally).
+   version, commit, SHA-256 and test tally).
+
+### Building a specific version in GitHub
+
+There are two ways to choose an explicit Debian version:
+
+- **Push a tag** `v<version>`, e.g. `git tag v1.2.3 && git push origin v1.2.3`.
+- **Run the workflow manually** (Actions → *Build & Deploy .deb* → *Run
+  workflow*) and enter the `version` input, e.g. `1.2.3`.
+
+Both paths build `nvim-forge_<version>_amd64.deb`, verify it with the full
+offline acceptance suite, refresh the `continuous` release, and additionally
+publish a `v<version>` release carrying the same artifacts. The version must
+be a valid Debian version (start with a digit; letters, digits, `.`, `+`, `~`,
+`:` and `-` are allowed).
 
 ## Known limitations
 

@@ -1,17 +1,29 @@
 name: Build & Deploy .deb
 
 # Every push to master rebuilds the offline Neovim distribution from the
-# pinned manifest, runs the full 16-check acceptance suite inside the
+# pinned manifest, runs the full 23-check acceptance suite inside the
 # Ubuntu 22.04 proot sandbox, and re-publishes the .deb as a rolling
 # "continuous" GitHub Release (plus a build artifact for the run).
+#
+# A `v<version>` tag push, or a manual run with the `version` input, builds the
+# same package with that explicit Debian version and additionally publishes an
+# immutable-style release named `v<version>` (e.g. v1.2.3 ->
+# nvim-forge_1.2.3_amd64.deb).
 
 on:
   push:
     branches: [master]
-  workflow_dispatch:   # manual runs
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Debian package version (e.g. 1.2.3)'
+        required: true
+        default: '1.0.0'
+        type: string
 
 permissions:
-  contents: write      # create/update the rolling release
+  contents: write      # create/update releases and tags
 
 # One deploy at a time; don't cancel a half-finished build.
 concurrency:
@@ -26,6 +38,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # tag pushes need the tag object
 
       - name: Install host dependencies
         run: |
@@ -33,6 +47,35 @@ jobs:
           sudo apt-get install -y -qq --no-install-recommends \
             jq curl ca-certificates xz-utils unzip gzip gcc make python3 \
             libtalloc-dev
+
+      - name: Resolve package version
+        id: version
+        env:
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+        run: |
+          set -euo pipefail
+          if [[ -n "${INPUT_VERSION:-}" ]]; then
+            ver="$INPUT_VERSION"
+            publish=true
+          elif [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            ver="${GITHUB_REF#refs/tags/v}"
+            publish=true
+          else
+            ver=$(jq -r '.version // empty' manifest/pins-locked.json)
+            [[ -n "$ver" ]] || ver=1.0.0
+            publish=false
+          fi
+
+          # Debian version policy: start with a digit, then letters, digits,
+          # '.', '+', '~', ':' (epoch) or '-' (revision).  No whitespace.
+          [[ "$ver" =~ ^[0-9][A-Za-z0-9.+:~-]*$ ]] || {
+            echo "::error::Invalid Debian version: '$ver'" >&2
+            exit 1
+          }
+
+          echo "version=$ver" >> "$GITHUB_OUTPUT"
+          echo "publish_versioned=$publish" >> "$GITHUB_OUTPUT"
+          echo "Resolved version: $ver (versioned release: $publish)"
 
       # Downloads are checksum-pinned; reuse them across runs.
       - name: Cache upstream artifacts
@@ -47,51 +90,70 @@ jobs:
         run: bash scripts/build-proot.sh
 
       - name: Fetch pins, build package, audit ELF, run acceptance suite
+        env:
+          NVF_VERSION: ${{ steps.version.outputs.version }}
         run: bash scripts/build-all.sh
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: nvim-forge-${{ github.sha }}
+          name: nvim-forge-${{ steps.version.outputs.version }}-${{ github.sha }}
           path: |
             dist/*.deb
             dist/SHA256SUMS
             dist/TEST-REPORT.md
           if-no-files-found: error
 
-      - name: Deploy rolling GitHub Release
+      - name: Deploy GitHub Releases
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+          PUBLISH_VERSIONED: ${{ steps.version.outputs.publish_versioned }}
         run: |
           set -euo pipefail
           deb=(dist/*.deb)
           [[ ${#deb[@]} -eq 1 ]] || { echo "expected exactly one .deb" >&2; exit 1; }
 
-          ver=$(dpkg-deb -f "${deb[0]}" Version)
+          built=$(dpkg-deb -f "${deb[0]}" Version)
+          [[ "$built" == "$VERSION" ]] || {
+            echo "::error::Built version '$built' != requested '$VERSION'" >&2
+            exit 1
+          }
+
           sha=$(sha256sum "${deb[0]}" | cut -d' ' -f1)
           size=$(du -h "${deb[0]}" | cut -f1)
           passed=$(grep -cE '\| PASS \|$' dist/TEST-REPORT.md || true)
           total=$(grep -cE '^\| T[0-9]+' dist/TEST-REPORT.md || true)
 
-          tag=continuous
+          notes=/tmp/release-notes.md
           {
-            echo "Rolling release of **nvim-forge ${ver}**, built from commit \`${GITHUB_SHA::12}\`."
+            echo "Rolling release of **nvim-forge ${VERSION}**, built from commit \`${GITHUB_SHA::12}\`."
             echo
             echo "| | |"
             echo "|---|---|"
+            echo "| Version | \`${VERSION}\` |"
             echo "| Commit | \`${GITHUB_SHA::12}\` |"
             echo "| Size | ${size} |"
             echo "| SHA-256 | \`${sha}\` |"
             echo "| Acceptance tests | ${passed}/${total} passed |"
             echo
             echo "**Install:** download the \`.deb\` below, then"
-            echo "\`sha256sum -c SHA256SUMS\` and \`sudo dpkg -i nvim-forge_${ver}_amd64.deb\`."
+            echo "\`sha256sum -c SHA256SUMS\` and \`sudo dpkg -i nvim-forge_${VERSION}_amd64.deb\`."
             echo "Works fully offline afterwards; see \`TEST-REPORT.md\` for validation details."
-          } > /tmp/release-notes.md
+          } > "$notes"
 
-          gh release view "$tag" >/dev/null 2>&1 \
-            || gh release create "$tag" --prerelease --title "nvim-forge ${ver} (continuous)"
-          gh release edit "$tag" --prerelease \
-            --title "nvim-forge ${ver} (continuous)" \
-            --notes-file /tmp/release-notes.md
-          gh release upload "$tag" "${deb[@]}" dist/SHA256SUMS dist/TEST-REPORT.md --clobber
+          publish() {
+            local tag="$1" title="$2"
+            gh release view "$tag" >/dev/null 2>&1 \
+              || gh release create "$tag" --prerelease --title "$title" --notes-file "$notes"
+            gh release edit "$tag" --prerelease --title "$title" --notes-file "$notes"
+            gh release upload "$tag" "${deb[@]}" dist/SHA256SUMS dist/TEST-REPORT.md --clobber
+          }
+
+          # Master pushes always refresh the rolling release.
+          publish continuous "nvim-forge ${VERSION} (continuous)"
+
+          # Explicit versions also get their own release tag.
+          if [[ "$PUBLISH_VERSIONED" == "true" ]]; then
+            publish "v${VERSION}" "nvim-forge ${VERSION}"
+          fi
