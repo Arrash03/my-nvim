@@ -8,16 +8,30 @@ local augroup = function(name)
 end
 
 -- Indentation policy --------------------------------------------------------
--- Python, C, C++ and Rust: 4 spaces, expanded tabs (per distribution spec).
+-- Python: 4 spaces. C/C++/Rust/CMake: real tab characters, displayed 4 wide.
 -- Lua (our own config): 2 spaces, the ecosystem convention.
 vim.api.nvim_create_autocmd('FileType', {
-  group = augroup('indent'),
-  pattern = { 'python', 'c', 'cpp', 'rust' },
+  group = augroup('indent_spaces'),
+  pattern = { 'python' },
   callback = function(ev)
     vim.bo[ev.buf].expandtab = true
     vim.bo[ev.buf].shiftwidth = 4
     vim.bo[ev.buf].tabstop = 4
     vim.bo[ev.buf].softtabstop = 4
+    vim.bo[ev.buf].smartindent = true
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  group = augroup('indent_tabs'),
+  pattern = { 'c', 'cpp', 'rust', 'cmake' },
+  callback = function(ev)
+    -- softtabstop=0 makes <Tab> insert a literal tab at any column;
+    -- shiftwidth/tabstop=4 keep alignment and autoindent consistent.
+    vim.bo[ev.buf].expandtab = false
+    vim.bo[ev.buf].shiftwidth = 4
+    vim.bo[ev.buf].tabstop = 4
+    vim.bo[ev.buf].softtabstop = 0
     vim.bo[ev.buf].smartindent = true
   end,
 })

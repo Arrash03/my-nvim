@@ -1,16 +1,16 @@
 # nvim-forge offline test report
 
-- Package: `nvim-forge_1.0.0_amd64.deb` (290M, installed 1208820 KiB)
-- Built: 2026-11-23 09:19:25 UTC
+- Package: `nvim-forge_1.0.0_amd64.deb` (289M, installed 1208820 KiB)
+- Built: 2026-11-25 08:30:08 UTC
 - Target: Ubuntu 22.04 (amd64), glibc baseline 2.35 (Ubuntu 22.04)
 - Environment: proot 5.4.0 sandbox on a pristine ubuntu-base-22.04.5
   rootfs (used instead of Docker/Podman: neither is available on the
   build host and unprivileged user namespaces are blocked by AppArmor).
-- Result: **21 passed, 0 failed**
+- Result: **22 passed, 0 failed**
 
 | ID | Check | Result |
 |----|-------|--------|
-| T01 | SHA256SUMS verified; metadata ok (sha256=f0c25b752031f7d3…) | PASS |
+| T01 | SHA256SUMS verified; metadata ok (sha256=7dc173abb4d16ede…) | PASS |
 | T02 | clean dpkg -i install; system /usr/bin/nvim untouched | PASS |
 | T03 | nvim-forge --version -> NVIM v0.12.6 | PASS |
 | T04 | headless startup: theme, options, plugins, LSP config, exes | PASS |
@@ -30,9 +30,10 @@
 | T18 | completion: LSP+snippet+buffer sources, mappings, live buffer suggestion | PASS |
 | T19 | search: Telescope <C-t> + quickfix/location-list <C-t> open in new tabs | PASS |
 | T20 | grep filters: include/exclude globs select the right files | PASS |
-| T21 | dpkg -r removes bundle + launcher; system nvim and user state kept | PASS |
+| T21 | indent: real tabs in C/C++/Rust/CMake, 4 spaces in Python | PASS |
+| T22 | dpkg -r removes bundle + launcher; system nvim and user state kept | PASS |
 
-- Package SHA-256: `f0c25b752031f7d3dd79e84c64bdef08b70a83a1e7c5bb19741374a158a33669`
+- Package SHA-256: `7dc173abb4d16ede8698dbbf984d975aa43579114682c5780f950abc0cb93163`
 
 ## Versions under test
 

@@ -25,7 +25,8 @@
 #   T18  completion: LSP/buffer/snippet sources, mappings, real buffer suggestion
 #   T19  search results open in another tab (Telescope + quickfix/location list)
 #   T20  filtered grep: include/exclude globs on the offline grep fallback
-#   T21  clean removal via dpkg -r (system Neovim + user state kept)
+#   T21  indentation: tabs for C/C++/Rust/CMake, 4 spaces for Python
+#   T22  clean removal via dpkg -r (system Neovim + user state kept)
 #
 # Writes dist/TEST-REPORT.md.  Exit code = number of failed checks.
 # ---------------------------------------------------------------------------
@@ -315,7 +316,7 @@ else
 fi
 
 # ------------------------------------------------ T18 completion / suggestions
-sroot /bin/bash -c 'printf "placeholder\n" > '"$WORK"'/completion.txt; printf "placeholder\n" > '"$WORK"'/search-tabs.txt'
+sroot /bin/bash -c 'printf "placeholder\n" > '"$WORK"'/completion.txt; printf "placeholder\n" > '"$WORK"'/search-tabs.txt; printf "placeholder\n" > '"$WORK"'/indent.txt'
 sroot /usr/bin/nvim-forge --headless --cmd 'set nomore' \
   "$WORK/completion.txt" -c 'luafile /nvf-build/tests/completion.lua'
 if [[ $RC -eq 0 ]] && have NVF-COMPLETION-OK && ! have NVF-COMPLETION-FAIL; then
@@ -342,7 +343,16 @@ else
   row FAIL T20 "grep include/exclude filters" "rc=$RC ${OUT//$'\n'/ }"
 fi
 
-# ------------------------------------------------------ T21 clean removal
+# ------------------------------------------------ T21 indentation policy
+sroot /usr/bin/nvim-forge --headless --cmd 'set nomore' \
+  "$WORK/indent.txt" -c 'luafile /nvf-build/tests/indent.lua'
+if [[ $RC -eq 0 ]] && have NVF-INDENT-OK && ! have NVF-INDENT-FAIL; then
+  row PASS T21 "indent: real tabs in C/C++/Rust/CMake, 4 spaces in Python"
+else
+  row FAIL T21 "indentation policy" "rc=$RC ${OUT//$'\n'/ }"
+fi
+
+# ------------------------------------------------------ T22 clean removal
 sroot /bin/bash -c 'dpkg -r nvim-forge </dev/null'
 rm_rc=$RC; rm_out=$OUT
 sroot /bin/bash -c '
@@ -353,9 +363,9 @@ sroot /bin/bash -c '
   [ -d /home/tester/.local/state/nvim-forge ] && echo user-state-kept'
 if [[ $rm_rc -eq 0 ]] && have opt-gone && have launcher-gone \
    && have "$SYS_MD5" && have user-state-kept; then
-  row PASS T21 "dpkg -r removes bundle + launcher; system nvim and user state kept"
+  row PASS T22 "dpkg -r removes bundle + launcher; system nvim and user state kept"
 else
-  row FAIL T21 "clean removal" "rc=$rm_rc ${OUT//$'\n'/ }"
+  row FAIL T22 "clean removal" "rc=$rm_rc ${OUT//$'\n'/ }"
 fi
 
 # --------------------------------------------------------------- report

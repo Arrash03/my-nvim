@@ -101,6 +101,12 @@ available this opens Telescope’s live grep with `rg --glob` filters; on the
 offline target it runs `grep -rn` with `--include`/`--exclude`/`--exclude-dir`
 and fills the quickfix list. `<C-t>` still opens any result in another tab.
 
+### Indentation
+
+Pressing `Tab` inserts a **real tab** in C, C++, Rust, and CMake files
+(displayed 4 columns wide). In Python files it inserts **4 spaces**. Lua uses
+2 spaces and Markdown uses 2 spaces with prose-friendly wrapping.
+
 ### File explorer
 
 The sidebar opens automatically at startup (like VS Code) showing only the

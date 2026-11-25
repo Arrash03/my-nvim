@@ -200,7 +200,9 @@ boxes, run with `NVF_ICONS=ascii nvim-forge` for plain `▸`/`▾` arrows (or
 
 Auto behaviour (no keys needed):
 
-- Tabs = 4 spaces for python/c/cpp/rust, 2 for lua; smart indent everywhere. Markdown uses 2-space indentation and prose-friendly defaults (see below).
+- Pressing `Tab` inserts a real tab in C/C++/Rust/CMake (displayed 4 columns)
+  and **4 spaces** in Python. Lua uses 2 spaces; Markdown uses 2 spaces and
+  prose-friendly defaults. Smart indent is enabled everywhere.
 - Yanked text flashes (`IncSearch` highlight).
 - Cursor position restored when reopening a file.
 - Files > 2 MiB open in "large file mode": no syntax highlight, no treesitter,
