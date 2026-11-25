@@ -26,7 +26,8 @@
 #   T19  search results open in another tab (Telescope + quickfix/location list)
 #   T20  filtered grep: include/exclude globs on the offline grep fallback
 #   T21  indentation: tabs for C/C++/Rust/CMake, 4 spaces for Python
-#   T22  clean removal via dpkg -r (system Neovim + user state kept)
+#   T22  command-line suggestions: Tab popup for :commands and file names
+#   T23  clean removal via dpkg -r (system Neovim + user state kept)
 #
 # Writes dist/TEST-REPORT.md.  Exit code = number of failed checks.
 # ---------------------------------------------------------------------------
@@ -352,7 +353,16 @@ else
   row FAIL T21 "indentation policy" "rc=$RC ${OUT//$'\n'/ }"
 fi
 
-# ------------------------------------------------------ T22 clean removal
+# --------------------------------------- T22 command-line suggestions
+sroot /usr/bin/nvim-forge --headless --cmd 'set nomore' \
+  "$WORK/indent.txt" -c 'luafile /nvf-build/tests/cmdline.lua'
+if [[ $RC -eq 0 ]] && have NVF-CMDLINE-OK && ! have NVF-CMDLINE-FAIL; then
+  row PASS T22 "command mode: <Tab> popup lists commands/files; NVF commands offered"
+else
+  row FAIL T22 "command-line suggestions" "rc=$RC ${OUT//$'\n'/ }"
+fi
+
+# ------------------------------------------------------ T23 clean removal
 sroot /bin/bash -c 'dpkg -r nvim-forge </dev/null'
 rm_rc=$RC; rm_out=$OUT
 sroot /bin/bash -c '
@@ -363,9 +373,9 @@ sroot /bin/bash -c '
   [ -d /home/tester/.local/state/nvim-forge ] && echo user-state-kept'
 if [[ $rm_rc -eq 0 ]] && have opt-gone && have launcher-gone \
    && have "$SYS_MD5" && have user-state-kept; then
-  row PASS T22 "dpkg -r removes bundle + launcher; system nvim and user state kept"
+  row PASS T23 "dpkg -r removes bundle + launcher; system nvim and user state kept"
 else
-  row FAIL T22 "clean removal" "rc=$rm_rc ${OUT//$'\n'/ }"
+  row FAIL T23 "clean removal" "rc=$rm_rc ${OUT//$'\n'/ }"
 fi
 
 # --------------------------------------------------------------- report

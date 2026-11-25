@@ -108,6 +108,14 @@ in a bordered menu with kind/source labels; `<C-Space>` opens it explicitly,
 capabilities with every server. Acceptance T18 drives the real buffer source
 and asserts that a partial word returns the full identifier.
 
+Command mode (`:`) has its own suggestion popup, powered by Neovim's wildmenu:
+`wildmode=list:longest,full` shows all matches on the first `<Tab>` and
+completes the full match on the next, with `wildoptions=pum` and
+`wildignorecase`. It covers Ex commands (including all `:NVF...` commands),
+options, help tags and file names, while skipping `.git`, `node_modules`,
+`target` and `__pycache__`. Acceptance T22 checks the wildmenu settings and
+verifies real command/file candidates are returned.
+
 C/C++ compile database and fixes can be handled entirely from the editor:
 `compile_commands.json` in the project root (or `build/`) is found
 automatically; a project `.clangd` file with
@@ -132,9 +140,9 @@ Individual steps: `fetch.sh` (download+verify pins) → `sandbox.sh`
 (prepare Ubuntu 22.04 proot rootfses) → `build-parsers.sh` (compile
 grammars inside the 22.04 sandbox) → `stage.sh` (assemble /opt tree) →
 `check-elf.sh` (ldd + glibc ceilings) → `build-deb.sh` → `verify.sh`
-(22-check offline acceptance suite, writes `dist/TEST-REPORT.md`).
+(23-check offline acceptance suite, writes `dist/TEST-REPORT.md`).
 
-## 6. Test results — 22/22 PASS
+## 6. Test results — 23/23 PASS
 
 Run in a pristine ubuntu-base-22.04.5 rootfs (see §8 for why proot):
 
@@ -158,7 +166,8 @@ Run in a pristine ubuntu-base-22.04.5 rootfs (see §8 for why proot):
 | T19 | search results: Telescope + quickfix/location `<C-t>` opens tabs |
 | T20 | filtered grep: include/exclude globs produce the right quickfix matches |
 | T21 | indentation: literal tabs in C/C++/Rust/CMake, 4 spaces in Python |
-| T22 | `dpkg -r` removes bundle+launcher; system nvim and user state kept |
+| T22 | command mode: `<Tab>` popup with command/file suggestions |
+| T23 | `dpkg -r` removes bundle+launcher; system nvim and user state kept |
 
 ELF audit ceilings: max `GLIBC_2.34`, max `GLIBCXX_3.4.21` — inside the
 Ubuntu 22.04 baseline (2.35 / 3.4.30). glibc/libstdc++ are never bundled;

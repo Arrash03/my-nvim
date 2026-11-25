@@ -203,6 +203,9 @@ Auto behaviour (no keys needed):
 - Pressing `Tab` inserts a real tab in C/C++/Rust/CMake (displayed 4 columns)
   and **4 spaces** in Python. Lua uses 2 spaces; Markdown uses 2 spaces and
   prose-friendly defaults. Smart indent is enabled everywhere.
+- In **command mode** (`:`), type a partial command/file name and press `Tab`:
+  a popup lists all matches. Press `Tab` again (or `Shift-Tab`) to cycle through
+  them; `Enter` runs the completed command.
 - Yanked text flashes (`IncSearch` highlight).
 - Cursor position restored when reopening a file.
 - Files > 2 MiB open in "large file mode": no syntax highlight, no treesitter,

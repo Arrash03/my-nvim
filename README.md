@@ -179,6 +179,13 @@ support, so server suggestions (including function signatures and snippets)
 appear alongside your own buffer words. Search `/` and `?` also complete from
 the current buffer. No network or plugin download is involved.
 
+### Command-line suggestions
+
+In `:` command mode, type part of a command, file name, option, or help tag and
+press `Tab`. A popup lists all matches; press `Tab` again (or `Shift-Tab`) to
+cycle through them, then `Enter` to run the completed command. Case is ignored,
+and `.git`, `node_modules`, `target`, and `__pycache__` paths are skipped.
+
 ### Git Lens and blame (optional)
 
 Git is **not bundled** — the editor remains fully offline and works without

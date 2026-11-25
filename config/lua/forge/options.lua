@@ -52,6 +52,18 @@ o.confirm = true
 o.completeopt = { 'menu', 'menuone', 'noselect' }
 o.shortmess:append('c')      -- don't spam completion messages
 
+-- Command-line (`:`) completion.  <Tab> shows a popup with all matches on the
+-- first press and completes the full match on the second.  This also covers
+-- file names, user commands (:NVF...), :help tags and vim.opt values.
+o.wildmenu = true
+o.wildchar = 9               -- <Tab>
+o.wildmode = 'list:longest,full'
+o.wildoptions = { 'pum', 'tagfile' }
+o.wildignorecase = true
+o.wildignore = {
+  '.git/**', 'node_modules/**', 'target/**', '**/__pycache__/**', '**/*.pyc',
+}
+
 -- Files ------------------------------------------------------------------
 o.fileencoding = 'utf-8'
 o.backup = false            -- undo covers the backup use-case
